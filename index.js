@@ -1,4 +1,5 @@
-const express = require('./config/express');
+// const express = require('./config/express');
+import express from './config/express';
 const {logger} = require('./config/winston');
 
 const port = 3000;
