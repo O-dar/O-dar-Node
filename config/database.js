@@ -13,6 +13,6 @@ const dbconfig = {
     port: process.env.DB_PORT,
 }
 
-const client = new pg.Client(dbconfig);
+const pool = new pg.Pool(dbconfig);
 
-export default client;
+export default pool;

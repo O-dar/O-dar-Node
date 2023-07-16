@@ -46,12 +46,12 @@ CREATE TABLE users (
   desire_start_time INT,
   desire_end_time INT,
   profile_img VARCHAR(255),
-  job_notice INT2 NOT NULL,
-  place_notice INT2 NOT NULL,
-  place_provide INT2 NOT NULL,
-  created_at TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP NOT NULL,
-  active_status INT2 NOT NULL,
+  job_notice INT2 DEFAULT 0,
+  place_notice INT2 DEFAULT 0,
+  place_provide INT2 DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  active_status INT2 DEFAULT 0,
 
   FOREIGN KEY (region_id) REFERENCES regions(region_id),
   FOREIGN KEY (job_id) REFERENCES job_categories(job_id)
