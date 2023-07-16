@@ -16,10 +16,7 @@ export const createUser = async function (email, password, name, birthdate, phon
     try {
         const insertUserInfoParams = [email, password, name, birthdate, phone];
 
-        //const connection = await pool.getConnection(async (conn) => conn);
-
         const userIdResult = await userDao.insertUserInfo(insertUserInfoParams);
-        //console.log(`추가된 회원 : ${userIdResult[0].insertId}`)
         
         //return response(baseResponse.SUCCESS);
         return userIdResult;

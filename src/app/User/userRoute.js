@@ -3,7 +3,7 @@ module.exports = function(app){
     //const jwtMiddleware = require('../../../config/jwtMiddleware');
 
     // 1. 유저 생성 (회원가입) API
-    app.get('/app/users', user.postUsers);
+    app.post('/app/users', user.postUsers);
 };
 
 

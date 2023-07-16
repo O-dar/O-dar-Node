@@ -7,6 +7,8 @@ const {response, errResponse} = require("../../../config/response");
 //const regexEmail = require("regex-email");
 //const {emit} = require("nodemon");
 
+const dayjs = require('dayjs');
+
 /*
  01. 회원가입 API
  [POST] /app/users
@@ -14,13 +16,19 @@ const {response, errResponse} = require("../../../config/response");
 export const postUsers = async function (req, res) {
     try {
         /*
-        Body: email, password, name, birthdate, phone
+        Body: email, password, name, phone, year, month, day
         */
         const email = req.body.email;
         const password = req.body.password;
         const name = req.body.name;
-        const birthdate = new Date(req.body.birthdate);
         const phone = req.body.phone;
+
+        const year = parseInt(req.body.year);
+        const month = parseInt(req.body.month);
+        const day = parseInt(req.body.day);
+
+        const d = new Date(year, month, day);
+        const birthdate = dayjs(d).format('YYYY-MM-DD');
 
         const signUpResponse = await userService.createUser(
             email,

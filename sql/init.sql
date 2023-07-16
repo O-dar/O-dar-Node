@@ -13,7 +13,7 @@ CREATE TABLE province (
 CREATE TABLE city (
   city_id SERIAL NOT NULL PRIMARY KEY,
   city_name VARCHAR(255) UNIQUE NOT NULL,
-	province_id SERIAL NOT NULL,
+	province_id INT NOT NULL,
 	
   FOREIGN KEY (province_id) REFERENCES province(province_id)
 );
@@ -22,7 +22,7 @@ CREATE TABLE city (
 CREATE TABLE regions (
   region_id SERIAL NOT NULL PRIMARY KEY,
   region_name VARCHAR(255) UNIQUE NOT NULL,
-  city_id SERIAL NOT NULL,
+  city_id INT NOT NULL,
 	
   FOREIGN KEY (city_id) REFERENCES city(city_id)
 );
@@ -36,8 +36,8 @@ CREATE TABLE job_categories (
 -- 회원
 CREATE TABLE users (
   user_id SERIAL NOT NULL PRIMARY KEY,
-  region_id SERIAL,
-  job_id SERIAL,
+  region_id INT NULL DEFAULT NULL,
+  job_id INT NULL DEFAULT NULL,
   name VARCHAR(50) NOT NULL,
   email VARCHAR(100) UNIQUE NOT NULL,
   password VARCHAR(250) NOT NULL,
