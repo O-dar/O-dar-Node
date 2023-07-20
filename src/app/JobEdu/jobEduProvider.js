@@ -3,10 +3,10 @@ const jobEduDao = require("./jobEduDao");
 
 const { logger } = require("../../../config/winston");
 
-export const retrieveJobEduList = async function (pageSize, page) {
+export const retrieveJobEduList = async function (pageSize, page, active_status) {
   try {
     const offset = (page - 1) * pageSize;
-    const result = await jobEduDao.selectJobEduList(pageSize, offset);
+    const result = await jobEduDao.selectJobEduList(pageSize, offset, active_status);
     return result;
   } catch (error) {
     logger.error("DB 연결 실패");

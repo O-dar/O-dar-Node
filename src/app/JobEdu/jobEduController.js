@@ -4,12 +4,14 @@ const { response, errResponse } = require("../../../config/response");
 
 export const getJobEduList = async (req, res) => {
   try {
-    const page = req.query.page || 1; // 페이지 번호가 주어지지 않은 경우 기본값은 1
-    const pageSize = req.query.pageSize || 10; // 페이지 크기가 주어지지 않은 경우 기본값은 10
+    const page = req.query.page || 1;
+    const pageSize = req.query.pageSize || 10;
+    const active_status = req.query.active_status;
 
     const jobEduListResult = await jobEduProvider.retrieveJobEduList(
       pageSize,
-      page
+      page,
+      active_status
     );
 
     return res.send(response(baseResponse.SUCCESS, jobEduListResult));
