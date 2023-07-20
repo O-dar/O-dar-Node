@@ -26,3 +26,15 @@ export const retrieveJobEduListCount = async function () {
     throw error;
   }
 };
+
+export const retrieveJobEduById = async function (jobEduId) {
+  try {
+    const result = await jobEduDao.selectJobEduById(jobEduId);
+
+    return result;
+  } catch (error) {
+    logger.error("DB 연결 실패");
+    logger.error(error);
+    throw error;
+  }
+}

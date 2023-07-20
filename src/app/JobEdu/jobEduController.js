@@ -37,3 +37,13 @@ export const getJobEduListCount = async (req, res) => {
 
     return res.send(response(baseResponse.SUCCESS, jobEduListCountResult));
 };
+
+export const getJobEduById = async (req, res) => {
+  const jobEduId = req.params.jobEduId;
+
+  if (!jobEduId) return res.send(errResponse(baseResponse.JOBEDU_ID_EMPTY));
+
+  const jobEduByIdResult = await jobEduProvider.retrieveJobEduById(jobEduId);
+
+  return res.send(response(baseResponse.SUCCESS, jobEduByIdResult));
+}
