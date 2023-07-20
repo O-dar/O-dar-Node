@@ -4,10 +4,13 @@ module.exports = function (app) {
   // 1. 취업교육 목록 API
   app.get("/app/jobEdu", jobEdu.getJobEduList);
 
+  // 3. 취업교육 검색 API
+  app.get("/app/jobEdu/search", jobEdu.getJobEduBySearch);
+
   // 2. 취업교육 상세 조회 API
   app.get("/app/jobEdu/:jobEduId", jobEdu.getJobEduById);
 
-    
+
 
 
   /*

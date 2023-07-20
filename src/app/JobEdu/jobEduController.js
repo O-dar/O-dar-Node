@@ -4,26 +4,13 @@ const { response, errResponse } = require("../../../config/response");
 
 export const getJobEduList = async (req, res) => {
   try {
-    // 페이지 크기
-    let perPage = req.query.perPage;
-    // 페이지 번호
-    let page = req.query.page;
+    const page = req.query.page || 1; // 페이지 번호가 주어지지 않은 경우 기본값은 1
+    const pageSize = req.query.pageSize || 10; // 페이지 크기가 주어지지 않은 경우 기본값은 10
 
-    // 페이지 크기가 없으면 10으로 설정
-    if (perPage == undefined || typeof perPage == "undefined" || perPage == null) {
-		perPage = 10;
-	} else {
-		perPage = parseInt(perPage);
-	}
-
-    // 페이지 번호가 없으면 0으로 설정
-	if (page == undefined || typeof page == "undefined" || page == null) {
-		page = 0;
-	} else {
-		page = parseInt(page);
-	}
-
-    const jobEduListResult = await jobEduProvider.retrieveJobEduList(perPage, page);
+    const jobEduListResult = await jobEduProvider.retrieveJobEduList(
+      pageSize,
+      page
+    );
 
     return res.send(response(baseResponse.SUCCESS, jobEduListResult));
   } catch (error) {
@@ -33,9 +20,9 @@ export const getJobEduList = async (req, res) => {
 };
 
 export const getJobEduListCount = async (req, res) => {
-    const jobEduListCountResult = await jobEduProvider.retrieveJobEduListCount();
+  const jobEduListCountResult = await jobEduProvider.retrieveJobEduListCount();
 
-    return res.send(response(baseResponse.SUCCESS, jobEduListCountResult));
+  return res.send(response(baseResponse.SUCCESS, jobEduListCountResult));
 };
 
 export const getJobEduById = async (req, res) => {
@@ -46,4 +33,25 @@ export const getJobEduById = async (req, res) => {
   const jobEduByIdResult = await jobEduProvider.retrieveJobEduById(jobEduId);
 
   return res.send(response(baseResponse.SUCCESS, jobEduByIdResult));
-}
+};
+
+export const getJobEduBySearch = async (req, res) => {
+  const keyword = req.query.keyword;
+  const page = req.query.page || 1; // 페이지 번호가 주어지지 않은 경우 기본값은 1
+  const pageSize = req.query.pageSize || 10; // 페이지 크기가 주어지지 않은 경우 기본값은 10
+  if (!keyword) {
+    return res.status(400).json({ error: "keyword is required" });
+  }
+
+  try {
+    const data = await jobEduProvider.searchWithPagination(
+      keyword,
+      page,
+      pageSize
+    );
+    return res.send(response(baseResponse.SUCCESS, data));
+  } catch (err) {
+    console.log(err.stack);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+};
