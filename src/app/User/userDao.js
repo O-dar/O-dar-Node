@@ -14,7 +14,7 @@ async function insertUserInfo(insertUserInfoParams) {
 
   try {
     const userInfo = await pool.query(insertUserInfoQuery, insertUserInfoParams); // 쿼리문을 실행합니다.
-    return response(baseResponse.SUCCESS, userInfo.rows); // 사용자 정보를 반환
+    return response(baseResponse.SUCCESS, "계정이 생성되었습니다."); // 사용자 정보를 반환
   } catch (err) {
     console.error(err);
     return errResponse(baseResponse.SERVER_ERROR);
