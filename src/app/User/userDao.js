@@ -1,5 +1,7 @@
 const { logger } = require("../../../config/winston");
 import pool from "../../../config/database";
+const baseResponse = require("../../../config/baseResponseStatus");
+const {response, errResponse} = require("../../../config/response");
 
 
 //insertUserInfoParams
@@ -12,9 +14,10 @@ async function insertUserInfo(insertUserInfoParams) {
 
   try {
     const userInfo = await pool.query(insertUserInfoQuery, insertUserInfoParams); // 쿼리문을 실행합니다.
-    return userInfo.rows; // 사용자 정보를 반환
+    return response(baseResponse.SUCCESS, userInfo.rows); // 사용자 정보를 반환
   } catch (err) {
     console.error(err);
+    return errResponse(baseResponse.SERVER_ERROR);
   }
 
   //return insertUserInfoRow;
