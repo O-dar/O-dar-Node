@@ -26,7 +26,7 @@ export const postUsers = async function (req, res) {
 		const day = parseInt(req.body.day);
 
 		// Validation
-		// 1) 이메일: NOT null, 정규식, 중복 검사
+		// 1) 이메일: NOT null, 정규식
 		// 이메일 null
 		if(!email) {
 			return res.send(errResponse(baseResponse.SIGNUP_EMAIL_EMPTY));
@@ -35,7 +35,6 @@ export const postUsers = async function (req, res) {
 		if(!checkValidationEmail(email)) {
 			return res.send(errResponse(baseResponse.SIGNUP_EMAIL_ERROR_TYPE));
 		}
-		// 이메일 중복
 
 		// 2) 비밀번호: NOT null, 정규식(특수문자(!, @, #, $, % , &, *), 대소문자, 숫자), 길이(8 ~ 15자)
 		// 비밀번호 null
@@ -57,7 +56,7 @@ export const postUsers = async function (req, res) {
 			return res.send(errResponse(baseResponse.SIGNUP_NAME_LENGTH));
 		}
 
-		// 4) 전화번호: NOT null, 정규식, 중복 검사, 인증 유무
+		// 4) 전화번호: NOT null, 정규식, 인증 유무
 		// 전화번호 null
 		if(!phone) {
 			return res.send(errResponse(baseResponse.SIGNUP_PHONE_EMPTY));
@@ -66,7 +65,6 @@ export const postUsers = async function (req, res) {
 		if(!checkValidationPhone(phone)) {
 			return res.send(errResponse(baseResponse.SIGNUP_PHONE_ERROR_TYPE));
 		}
-		// 이미 가입된 번호
 
 		// 인증 안 된 번호
 

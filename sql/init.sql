@@ -44,7 +44,7 @@ CREATE TABLE users (
   email VARCHAR(100) UNIQUE NOT NULL,
   password VARCHAR(250) NOT NULL,
   birthdate DATE NOT NULL,
-  phone VARCHAR(20) NOT NULL,
+  phone VARCHAR(20) UNIQUE NOT NULL,
   desire_start_time INT,
   desire_end_time INT,
   profile_img VARCHAR(255),

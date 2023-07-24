@@ -16,7 +16,12 @@ async function insertUserInfo(insertUserInfoParams) {
     const userInfo = await pool.query(insertUserInfoQuery, insertUserInfoParams); // 쿼리문을 실행합니다.
     return response(baseResponse.SUCCESS, "계정이 생성되었습니다."); // 사용자 정보를 반환
   } catch (err) {
-    console.error(err);
+    // Validation
+    // 이메일 또는 전화번호가 중복되는 경우
+    if(err.code == 23505) { 
+      return errResponse(baseResponse.SIGNUP_REDUNDANT_EMAIL_PHONE);
+    }
+
     return errResponse(baseResponse.SERVER_ERROR);
   }
 
