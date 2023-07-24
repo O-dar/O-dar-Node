@@ -7,7 +7,7 @@
 
 <div align="center"> 
   
-[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FO-dar&count_bg=%23A2C08A&title_bg=%235B8E31&icon=&icon_color=%23E7E7E7&title=O-dar&edge_flat=false)](https://hits.seeyoufarm.com)
+<a href="https://hits.seeyoufarm.com"><img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FO-dar%2FO-dar-Node&count_bg=%2386AC68&title_bg=%234E6C37&icon=nextdoor.svg&icon_color=%23E7E7E7&title=O-dar+Server&edge_flat=false"/></a>
 
 <hr/>
 </div>
