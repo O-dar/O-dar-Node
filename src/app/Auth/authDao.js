@@ -5,5 +5,5 @@ import pool from "../../../config/database";
 
 
 module.exports = {
-
+  
 };

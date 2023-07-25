@@ -12,8 +12,6 @@ logger.info(`${process.env.NODE_ENV} - API Server Start At Port ${port}`);
 /*try {
   pool.connect();
   logger.info("Database 연결 성공");
-
-
 } catch (error) {
   logger.error("Database 연결 실패");
   logger.error(error);
