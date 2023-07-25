@@ -1,159 +1,134 @@
-const jwtMiddleware = require("../../../config/jwtMiddleware");
-const userProvider = require("../../app/User/userProvider");
-const userService = require("../../app/User/userService");
+const userProvider = require("./userProvider");
+const userService = require("./userService");
 const baseResponse = require("../../../config/baseResponseStatus");
 const {response, errResponse} = require("../../../config/response");
 
-const regexEmail = require("regex-email");
-const {emit} = require("nodemon");
+//const jwtMiddleware = require("../../../config/jwtMiddleware");
+//const regexEmail = require("regex-email");
+//const {emit} = require("nodemon");
 
-/**
- * API No. 0
- * API Name : 테스트 API
- * [GET] /app/test
- */
-// exports.getTest = async function (req, res) {
-//     return res.send(response(baseResponse.SUCCESS))
-// }
+const dayjs = require('dayjs');
 
-/**
- * API No. 1
- * API Name : 유저 생성 (회원가입) API
- * [POST] /app/users
- */
-exports.postUsers = async function (req, res) {
+/*
+ 01. 회원가입 API
+ [POST] /app/users
+*/
+export const postUsers = async function (req, res) {
+	try {
+		// Body: email, password, name, phone, year, month, day
+		const email = req.body.email;
+		const password = req.body.password;
+		const name = req.body.name;
+		const phone = req.body.phone;
 
-    /**
-     * Body: email, password, nickname
-     */
-    const {email, password, nickname} = req.body;
+		const year = parseInt(req.body.year);
+		const month = parseInt(req.body.month);
+		const day = parseInt(req.body.day);
 
-    // 빈 값 체크
-    if (!email)
-        return res.send(response(baseResponse.SIGNUP_EMAIL_EMPTY));
+		// Validation
+		// 1) 이메일: NOT null, 정규식
+		// 이메일 null
+		if(!email) {
+			return res.send(errResponse(baseResponse.SIGNUP_EMAIL_EMPTY));
+		}
+		// 이메일 정규식 오류
+		if(!checkValidationEmail(email)) {
+			return res.send(errResponse(baseResponse.SIGNUP_EMAIL_ERROR_TYPE));
+		}
 
-    // 길이 체크
-    if (email.length > 30)
-        return res.send(response(baseResponse.SIGNUP_EMAIL_LENGTH));
+		// 2) 비밀번호: NOT null, 정규식(특수문자(!, @, #, $, % , &, *), 대소문자, 숫자), 길이(8 ~ 15자)
+		// 비밀번호 null
+		if(!password) {
+			return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_EMPTY));
+		}
+		// 비밀번호 정규식, 길이 오류
+		if(!checkValidationPassword(password)) {
+			return res.send(errResponse(baseResponse.SIGNUP_PASSWORD_ERROR_TYPE));
+		}
 
-    // 형식 체크 (by 정규표현식)
-    if (!regexEmail.test(email))
-        return res.send(response(baseResponse.SIGNUP_EMAIL_ERROR_TYPE));
+		// 3) 이름: NOT null, 10글자 미만 한글
+		// 이름 null
+		if(!name) {
+			return res.send(errResponse(baseResponse.SIGNUP_NAME_EMPTY));
+		}
+		// 이름 길이 오류, 한글 아닌 경우
+		if(!checkValidationName(name)) {
+			return res.send(errResponse(baseResponse.SIGNUP_NAME_LENGTH));
+		}
 
-    // 기타 등등 - 추가하기
+		// 4) 전화번호: NOT null, 정규식, 인증 유무
+		// 전화번호 null
+		if(!phone) {
+			return res.send(errResponse(baseResponse.SIGNUP_PHONE_EMPTY));
+		}
+		// 전화번호 정규식
+		if(!checkValidationPhone(phone)) {
+			return res.send(errResponse(baseResponse.SIGNUP_PHONE_ERROR_TYPE));
+		}
 
+		// 인증 안 된 번호
 
-    const signUpResponse = await userService.createUser(
-        email,
-        password,
-        nickname
-    );
+		// 5) 생년월일: NOT null, 범위
+		// 연도 null
+		if(!year) {
+			return res.send(errResponse(baseResponse.SIGNUP_YEAR_EMPTY));
+		}
+		// 월 null
+		if(!month) {
+			return res.send(errResponse(baseResponse.SIGNUP_MONTH_EMPTY));
+		}
+		// 일 null
+		if(!day) {
+			return res.send(errResponse(baseResponse.SIGNUP_DAY_EMPTY));
+		}
+		// 연, 월, 일 범위 오류
+		if(year < 1000 || month < 1 || month > 12 || day < 1 || day > 31) {
+			return res.send(errResponse(baseResponse.SIGNUP_DAY_ERROR_TYPE));
+		}
 
-    return res.send(signUpResponse);
+		// 날짜 연, 월, 일로 request 받은 거 date 형식으로 변환
+		const d = new Date(year, month, day);
+		const birthdate = dayjs(d).format('YYYY-MM-DD');
+
+		const signUpResponse = await userService.createUser(
+			email,
+			password,
+			name,
+			birthdate,
+			phone
+		);
+
+		return res.send(signUpResponse);
+	} catch (error) {
+		console.error(error);
+		return res.send(errResponse(baseResponse.DB_ERROR));
+	}
 };
 
-/**
- * API No. 2
- * API Name : 유저 조회 API (+ 이메일로 검색 조회)
- * [GET] /app/users
- */
-exports.getUsers = async function (req, res) {
+// 이메일 정규식 체크
+const checkValidationEmail = ( email ) => {
+	var pattern = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 
-    /**
-     * Query String: email
-     */
-    const email = req.query.email;
+    return (email.match(pattern) != null);
+}
 
-    if (!email) {
-        // 유저 전체 조회
-        const userListResult = await userProvider.retrieveUserList();
-        return res.send(response(baseResponse.SUCCESS, userListResult));
-    } else {
-        // 유저 검색 조회
-        const userListByEmail = await userProvider.retrieveUserList(email);
-        return res.send(response(baseResponse.SUCCESS, userListByEmail));
-    }
-};
+// 비밀번호 정규식 체크
+const checkValidationPassword = ( password ) => {
+	var pattern = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/;
 
-/**
- * API No. 3
- * API Name : 특정 유저 조회 API
- * [GET] /app/users/{userId}
- */
-exports.getUserById = async function (req, res) {
+    return (password.match(pattern) != null);
+}
 
-    /**
-     * Path Variable: userId
-     */
-    const userId = req.params.userId;
+// 이름 정규식 체크
+const checkValidationName = ( name ) => {
+	var pattern = /^[가-힣]{1,10}$/;
 
-    if (!userId) return res.send(errResponse(baseResponse.USER_USERID_EMPTY));
+    return (name.match(pattern) != null);
+}
 
-    const userByUserId = await userProvider.retrieveUser(userId);
-    return res.send(response(baseResponse.SUCCESS, userByUserId));
-};
+// 전화번호 정규식 체크
+const checkValidationPhone = ( phone ) => {
+	var pattern = /^\d{3}-\d{3,4}-\d{4}$/;
 
-
-// TODO: After 로그인 인증 방법 (JWT)
-/**
- * API No. 4
- * API Name : 로그인 API
- * [POST] /app/login
- * body : email, passsword
- */
-exports.login = async function (req, res) {
-
-    const {email, password} = req.body;
-
-    // TODO: email, password 형식적 Validation
-
-    const signInResponse = await userService.postSignIn(email, password);
-
-    return res.send(signInResponse);
-};
-
-
-/**
- * API No. 5
- * API Name : 회원 정보 수정 API + JWT + Validation
- * [PATCH] /app/users/:userId
- * path variable : userId
- * body : nickname
- */
-exports.patchUsers = async function (req, res) {
-
-    // jwt - userId, path variable :userId
-
-    const userIdFromJWT = req.verifiedToken.userId
-
-    const userId = req.params.userId;
-    const nickname = req.body.nickname;
-
-    if (userIdFromJWT != userId) {
-        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
-    } else {
-        if (!nickname) return res.send(errResponse(baseResponse.USER_NICKNAME_EMPTY));
-
-        const editUserInfo = await userService.editUser(userId, nickname)
-        return res.send(editUserInfo);
-    }
-};
-
-
-
-
-
-
-
-
-
-
-
-/** JWT 토큰 검증 API
- * [GET] /app/auto-login
- */
-exports.check = async function (req, res) {
-    const userIdResult = req.verifiedToken.userId;
-    console.log(userIdResult);
-    return res.send(response(baseResponse.TOKEN_VERIFICATION_SUCCESS));
-};
+    return (phone.match(pattern) != null);
+}
