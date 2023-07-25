@@ -8,7 +8,7 @@ module.exports = function (app) {
   app.get("/app/jobEdu/search", jobEdu.getJobEduBySearch);
 
   // 2. 취업교육 상세 조회 API
-  app.get("/app/jobEdu/:jobEduId", jobEdu.getJobEduById);
+  app.get("/app/jobEdu/:jobEduId(\\d+)", jobEdu.getJobEduById);
 
 
 
