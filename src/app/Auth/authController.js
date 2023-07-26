@@ -62,7 +62,10 @@ export const sendVerificationSMS = async function (req, res) {
       },
     });
     console.log("response", smsRes.data);
-    return res.send(response(baseResponse.SUCCESS, "인증 번호가 전송되었습니다."));
+
+    const result = `{"response": "인증번호가 발송되었습니다.", "code": "${verificationCode}"}`;
+
+    return res.send(response(baseResponse.SUCCESS, JSON.parse(result)));
   } catch (err) {
     console.log(err);
     return res.send(errResponse(baseResponse.SERVER_ERROR));
