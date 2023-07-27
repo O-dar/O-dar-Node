@@ -49,6 +49,15 @@ module.exports = {
     //Connection, Transaction 등의 서버 오류
     DB_ERROR : { "isSuccess": false, "code": 500, "message": "데이터 베이스 에러"},
     SERVER_ERROR : { "isSuccess": false, "code": 500, "message": "서버 에러"},
- 
+
+
+
+
+
+
+    // JobPosting
+    JOBPOSTING_ID_EMPTY : { "isSuccess": false, "code": 400, "message": "jobPostingId를 입력해주세요." },
+    JOBPOSTING_ID_NOT_EXIST : { "isSuccess": false, "code": 404, "message": "해당 구직공고가 존재하지 않습니다." },
+    JOBPOSTING_SEARCH_EMPTY : { "isSuccess": false, "code": 404, "message": "검색 결과가 없습니다." },
  
 }
