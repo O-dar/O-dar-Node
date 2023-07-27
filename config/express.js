@@ -23,6 +23,7 @@ module.exports = function () {
     require('../src/app/JobCategory/jobCategoryRoute')(app);
     
     require('../src/app/JobEdu/jobEduRoute')(app);
+    require('../src/app/JobPosting/jobPostingRoute')(app);
     
     // require('../src/app/Board/boardRoute')(app);
 
