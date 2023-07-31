@@ -5,7 +5,7 @@ const { response, errResponse } = require("../../../config/response");
 export const getJobEduList = async (req, res) => {
   try {
     const page = req.query.page || 1;
-    const pageSize = req.query.pageSize || 10;
+    const pageSize = req.query.pageSize || 11;
     const active_status = req.query.active_status;
 
     const jobEduListResult = await jobEduProvider.retrieveJobEduList(
