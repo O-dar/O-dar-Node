@@ -20,6 +20,7 @@ module.exports = function () {
     // 도메인
     require('../src/app/User/userRoute')(app);
     require('../src/app/Auth/authRoute')(app);
+    require('../src/app/Image/imageRoute')(app);
     require('../src/app/JobCategory/jobCategoryRoute')(app);
     
 
