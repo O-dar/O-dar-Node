@@ -28,7 +28,7 @@ const jwtMiddleware = (req, res, next) => {
       
       res.locals.user = user;
       console.log(`jwtAuthorization 완료`);
-      console.log(user);
+      //console.log(user);
       next(); // Access Token 유효할 때도 next() 함수 호출
     }
   });

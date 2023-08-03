@@ -1,58 +1,36 @@
-const { pool } = require("../../../config/database");
+import pool from "../../../config/database";
 const { logger } = require("../../../config/winston");
 
 const userDao = require("./userDao");
 
-// Provider: Read 비즈니스 로직 처리
-
-exports.retrieveUserList = async function (email) {
-  if (!email) {
-    const connection = await pool.getConnection(async (conn) => conn);
-    const userListResult = await userDao.selectUser(connection);
-    connection.release();
-
-    return userListResult;
-
-  } else {
-    const connection = await pool.getConnection(async (conn) => conn);
-    const userListResult = await userDao.selectUserEmail(connection, email);
-    connection.release();
-
-    return userListResult;
+// email로 사용자 정보를 가져오는 함수를 정의합니다.
+export const getUserByEmail = async (email) => {
+  const client = await pool.connect(); // 클라이언트를 가져옵니다.
+  try {
+    const userInfo = await userDao.findUserByEmail(client, email); // 사용자 정보를 가져옵니다.
+    if (!userInfo) {
+      return null;
+    }
+    return userInfo; // 사용자 정보를 반환합니다.
+  } catch (err) {
+    console.error(err);
+  } finally {
+    client.release(); // 클라이언트를 반납합니다.
   }
 };
 
-exports.retrieveUser = async function (userId) {
-  const connection = await pool.getConnection(async (conn) => conn);
-  const userResult = await userDao.selectUserId(connection, userId);
-
-  connection.release();
-
-  return userResult[0];
-};
-
-exports.emailCheck = async function (email) {
-  const connection = await pool.getConnection(async (conn) => conn);
-  const emailCheckResult = await userDao.selectUserEmail(connection, email);
-  connection.release();
-
-  return emailCheckResult;
-};
-
-exports.passwordCheck = async function (selectUserPasswordParams) {
-  const connection = await pool.getConnection(async (conn) => conn);
-  const passwordCheckResult = await userDao.selectUserPassword(
-      connection,
-      selectUserPasswordParams
-  );
-  connection.release();
-  return passwordCheckResult[0];
-};
-
-exports.accountCheck = async function (email) {
-  const connection = await pool.getConnection(async (conn) => conn);
-  const userAccountResult = await userDao.selectUserAccount(connection, email);
-  connection.release();
-
-  return userAccountResult;
+// id로 사용자 정보를 가져오는 함수를 정의합니다.
+export const getUserById = async (id) => {
+  const client = await pool.connect(); // 클라이언트를 가져옵니다.
+  try {
+    const userInfo = await userDao.findUserById(client, id); // 사용자 정보를 가져옵니다.
+    if (!userInfo) {
+      return null;
+    }
+    return userInfo; // 사용자 정보를 반환합니다.
+  } catch (err) {
+    console.error(err);
+  } finally {
+    client.release(); // 클라이언트를 반납합니다.
+  }
 };
