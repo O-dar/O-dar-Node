@@ -3,7 +3,9 @@ const userService = require("./userService");
 const baseResponse = require("../../../config/baseResponseStatus");
 const {response, errResponse} = require("../../../config/response");
 
-//const jwtMiddleware = require("../../../config/jwtMiddleware");
+import bcrypt from "bcrypt";
+const { jwtMiddleware, generateToken } = require("../../../config/jwtMiddleware");
+import { setCookie, deleteCookie } from "../../../utils/cookie.js";
 //const regexEmail = require("regex-email");
 //const {emit} = require("nodemon");
 
@@ -132,3 +134,40 @@ const checkValidationPhone = ( phone ) => {
 
     return (phone.match(pattern) != null);
 }
+
+/*
+ 02. 로그인 API
+ [POST] /app/users/login
+*/
+export const login = async (req, res) => {
+  // id와 password로 로그인하는 함수
+  const email = req.body.email;
+	const password = req.body.password;
+	
+  try {
+    const user = await userService.getUserByEmail(email);
+		//console.log(user);
+    if (!user) {
+      return res.send(errResponse(baseResponse.USER_USEREMAIL_NOT_EXIST));
+    }
+
+    // 비밀번호가 일치하는지 확인합니다.
+    const isPasswordMatch = bcrypt.compareSync(password, user.password);
+
+    if (!isPasswordMatch) {
+      return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_WRONG));
+    }
+
+    // 토큰을 생성합니다.
+    const { accessToken } = await generateToken(user);
+    
+    // 토큰을 쿠키에 저장합니다.
+    setCookie(res, "accessToken", accessToken);
+    
+    //console.log(`로그인 완료`);
+		return res.send(response(baseResponse.SUCCESS, { accessToken }));
+  } catch (err) {
+    console.error(err);
+    return res.send(errResponse(baseResponse.SERVER_ERROR));
+  }
+};

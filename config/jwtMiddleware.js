@@ -6,33 +6,48 @@ const baseResponse = require("./baseResponseStatus");
 
 
 const jwtMiddleware = (req, res, next) => {
-    // read the token from header or url
-    const token = req.headers['x-access-token'] || req.query.token;
-    // token does not exist
-    if(!token) {
-        return res.send(errResponse(baseResponse.TOKEN_EMPTY))
+  // 헤더의 accessToeken을 검증하는 미들웨어
+  let accessToken = req.headers.authorization?.split(" ")[1];
+  // 또는 쿠키의 accessToken 파싱
+  if (!accessToken) {
+    accessToken = req.cookies.accessToken;
+  }
+  // 그래도 없으면
+  if (!accessToken) {
+    console.log(`Access Token이 없습니다.`);
+    return res.status(401).json({ message: "Access token not provided" });
+  }
+
+  // accessToken이 유효한지 확인
+  jwt.verify(accessToken, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      
+    } else {
+      console.log("Access Token 유효");
+      res.locals.accessToken = accessToken;
+      
+      res.locals.user = user;
+      console.log(`jwtAuthorization 완료`);
+      console.log(user);
+      next(); // Access Token 유효할 때도 next() 함수 호출
     }
-
-    // create a promise that decodes the token
-    const p = new Promise(
-        (resolve, reject) => {
-            jwt.verify(token, secret_config.jwtsecret , (err, verifiedToken) => {
-                if(err) reject(err);
-                resolve(verifiedToken)
-            })
-        }
-    );
-
-    // if it has failed to verify, it will return an error message
-    const onError = (error) => {
-        return res.send(errResponse(baseResponse.TOKEN_VERIFICATION_FAILURE))
-    };
-    // process the promise
-    p.then((verifiedToken)=>{
-        //비밀 번호 바뀌었을 때 검증 부분 추가 할 곳
-        req.verifiedToken = verifiedToken;
-        next();
-    }).catch(onError)
+  });
 };
 
-module.exports = jwtMiddleware;
+export const generateToken = async (user) => {
+    // 토큰을 생성하는 함수
+    const accessToken = jwt.sign(
+      { id: user.user_id, email: user.email, name: user.name },
+      process.env.JWT_SECRET,
+      { expiresIn: "30d" }
+    );
+  
+    return { accessToken };
+  };
+
+
+
+module.exports = {
+    jwtMiddleware,
+    generateToken
+};
