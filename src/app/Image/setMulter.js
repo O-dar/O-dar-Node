@@ -17,11 +17,6 @@ const storage = multer.diskStorage({
       }
     }
     callback(null, fileName);
-  },
-  path: (req, file, callback) => {
-    let imageUrl = file.destination + file.filename;
-
-    callback(null, imageUrl);
   }
 })
 const upload = multer({storage: storage});

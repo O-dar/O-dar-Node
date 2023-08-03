@@ -171,3 +171,16 @@ export const login = async (req, res) => {
     return res.send(errResponse(baseResponse.SERVER_ERROR));
   }
 };
+
+/*
+	03. 사용자 정보 조회API
+	[GET] /app/users/info
+*/
+export const getUserInfo = async (req, res) => {
+	try {
+		
+	} catch (err) {
+    console.error(err);
+    return res.send(errResponse(baseResponse.SERVER_ERROR));
+  }
+}
