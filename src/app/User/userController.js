@@ -139,6 +139,42 @@ const checkValidationPhone = ( phone ) => {
 }
 
 /*
+ 01 - 2. 회원탈퇴 API
+ [DELETE] /app/users/delete
+*/
+export const deleteUsers = async function (req, res) {
+	try {
+		const id = res.locals.user.id; // 토큰에서 id 추출
+		const user = await userProvider.getUserById(id);
+
+		const email = req.body.email;
+		const password = req.body.password;
+
+		// 유저 존재? 확인
+		if (!user) {
+      return res.send(errResponse(baseResponse.USER_USEREMAIL_NOT_EXIST));
+    }
+		// 이메일이 일치하는지 확인
+		if(user.email !== email) {
+			return res.send(errResponse(baseResponse.SIGNIN_EMAIL_WRONG));
+		}
+
+    // 비밀번호가 일치하는지 확인합니다.
+    const isPasswordMatch = bcrypt.compareSync(password, user.password);
+    if (!isPasswordMatch) {
+      return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_WRONG));
+    }
+
+		const deleteUserResponse = await userService.deleteUserService(id);
+    deleteCookie(res);
+
+		return res.send(deleteUserResponse);
+	} catch (error) {
+		console.error(error);
+		return res.send(errResponse(baseResponse.DB_ERROR));
+	}
+};
+/*
  02. 로그인 API
  [POST] /app/users/login
 */
@@ -176,8 +212,26 @@ export const login = async (req, res) => {
 };
 
 /*
-	03. 사용자 정보 조회API
+ 03. 로그아웃 API
+ [POST] /app/users/logout
+*/
+export const logout = async (req, res) => {
+	try {
+		//const id = res.locals.user.id;
+		deleteCookie(res);
+		return res.send(response(baseResponse.SUCCESS, "로그아웃 되었습니다."));
+	} catch (err) {
+    console.error(err);
+    return res.send(errResponse(baseResponse.SERVER_ERROR));
+  }
+}
+
+/*
+	04. 사용자 정보 조회API
 	[GET] /app/users/info
+	: 이름(name), 생년월일(birthdate), 지역(region_id -> province_name, city_name, region_name),
+	프로필 이미지(profile_img), 희망직종(job_id -> job_name), 희망요일, 희망시간,
+	채용정보 알림 동의유무, 위치 알림 동의 유무, 위치 제공 동의 유무
 */
 export const getUserInfo = async (req, res) => {
 	//const client = await pool.connect(); // 클라이언트를 가져옵니다.

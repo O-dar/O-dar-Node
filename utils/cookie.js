@@ -11,6 +11,11 @@ export const deleteCookie = (res) => {
     expires: new Date(0),
     // httpOnly: true,
   };
+
+  console.log("--------------------------------------------");
+  console.log(res);
+  //res.clearCookie('accessToken');
+  //res.clearCookie('user').end();
   res.cookie("accessToken", "", cookieOptions);
   //res.cookie("refreshToken", "", cookieOptions);
   res.cookie("issuer", "", cookieOptions);

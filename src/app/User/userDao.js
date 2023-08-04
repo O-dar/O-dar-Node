@@ -28,13 +28,26 @@ async function insertUserInfo(insertUserInfoParams) {
   //return insertUserInfoRow;
 }
 
+// 회원탈퇴: 사용자 삭제
+async function deleteUserById(id) {
+  const deleteUserByIdQuery = `DELETE FROM users WHERE user_id = $1`;
+  try {
+    const deleteUser = await pool.query(deleteUserByIdQuery, [id]); // 쿼리문을 실행합니다.
+
+    return response(baseResponse.SUCCESS, "계정이 삭제되었습니다.");
+  } catch (err) {
+    console.error(err);
+    return errResponse(baseResponse.SERVER_ERROR);
+  }
+}
+
 export const findUserById = async (client, id) => {
   const findUserByIdQuery = `SELECT * FROM users WHERE user_id = $1`; // id로 사용자 정보를 가져오는 쿼리문을 정의합니다.
   try {
     const userInfo = await client.query(findUserByIdQuery, [id]); // 쿼리문을 실행합니다.
     return userInfo.rows[0]; // 사용자 정보를 반환합니다.
   } catch (err) {
-    console.error(err);
+    return errResponse(baseResponse.SERVER_ERROR);
   }
 };
 
@@ -44,13 +57,14 @@ const findUserByEmail = async (client, email) => {
     const userInfo = await client.query(findUserByEmailQuery, [email]); // 쿼리문을 실행합니다.
     return userInfo.rows[0]; // 사용자 정보를 반환합니다.
   } catch (err) {
-    console.error(err);
+    return errResponse(baseResponse.SERVER_ERROR);
   }
 };
 
 
 module.exports = {
   insertUserInfo,
+  deleteUserById,
   findUserById,
   findUserByEmail,
 };
