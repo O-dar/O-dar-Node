@@ -3,9 +3,14 @@ const userService = require("./userService");
 const baseResponse = require("../../../config/baseResponseStatus");
 const {response, errResponse} = require("../../../config/response");
 
-//const jwtMiddleware = require("../../../config/jwtMiddleware");
+import bcrypt from "bcrypt";
+const jwt = require('jsonwebtoken');
+const { jwtMiddleware, generateToken } = require("../../../config/jwtMiddleware");
+import { setCookie, deleteCookie } from "../../../utils/cookie.js";
 //const regexEmail = require("regex-email");
 //const {emit} = require("nodemon");
+
+import pool from "../../../config/database.js";
 
 const dayjs = require('dayjs');
 
@@ -131,4 +136,79 @@ const checkValidationPhone = ( phone ) => {
 	var pattern = /^\d{3}-\d{3,4}-\d{4}$/;
 
     return (phone.match(pattern) != null);
+}
+
+/*
+ 02. 로그인 API
+ [POST] /app/users/login
+*/
+export const login = async (req, res) => {
+  // id와 password로 로그인하는 함수
+  const email = req.body.email;
+	const password = req.body.password;
+	
+  try {
+    const user = await userProvider.getUserByEmail(email);
+		//console.log(user);
+    if (!user) {
+      return res.send(errResponse(baseResponse.USER_USEREMAIL_NOT_EXIST));
+    }
+
+    // 비밀번호가 일치하는지 확인합니다.
+    const isPasswordMatch = bcrypt.compareSync(password, user.password);
+
+    if (!isPasswordMatch) {
+      return res.send(errResponse(baseResponse.SIGNIN_PASSWORD_WRONG));
+    }
+
+    // 토큰을 생성합니다.
+    const { accessToken } = await generateToken(user);
+    
+    // 토큰을 쿠키에 저장합니다.
+    setCookie(res, "accessToken", accessToken);
+    
+    //console.log(`로그인 완료`);
+		return res.send(response(baseResponse.SUCCESS, { accessToken }));
+  } catch (err) {
+    console.error(err);
+    return res.send(errResponse(baseResponse.SERVER_ERROR));
+  }
+};
+
+/*
+	03. 사용자 정보 조회API
+	[GET] /app/users/info
+*/
+export const getUserInfo = async (req, res) => {
+	//const client = await pool.connect(); // 클라이언트를 가져옵니다.
+	//let accessToken = req.headers.authorization?.split(" ")[1];
+	try {
+		const id = res.locals.user.id;
+    let userInfo = await userProvider.getUserById(id);
+    userInfo = {
+      // 필요한 정보만 추출
+      //user_id: userInfo.user_id,
+      name: userInfo.name,
+      birthdate: userInfo.birthdate,
+      
+    };
+		/*jwt.verify(accessToken, process.env.JWT_SECRET, (err, user) => {
+			if (err) {
+				
+			} else {
+				console.log("Access Token 유효");
+				res.locals.accessToken = accessToken;
+				
+				res.locals.user = user;
+				console.log(`jwtAuthorization 완료`);
+				//console.log(user);
+				return res.status(200).json({ user }); // Access Token 유효할 때도 next() 함수 호출
+			}
+		});*/
+		
+    return res.send(response(baseResponse.SUCCESS, { userInfo }));
+	} catch (err) {
+    console.error(err);
+    return res.send(errResponse(baseResponse.SERVER_ERROR));
+  }
 }
