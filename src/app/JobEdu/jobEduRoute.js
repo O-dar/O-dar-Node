@@ -10,9 +10,6 @@ module.exports = function (app) {
   // 2. 취업교육 상세 조회 API
   app.get("/app/jobEdu/:jobEduId(\\d+)", jobEdu.getJobEduById);
 
-
-
-
   /*
   내부 사용 API
     */
