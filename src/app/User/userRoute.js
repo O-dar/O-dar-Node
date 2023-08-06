@@ -25,6 +25,9 @@ module.exports = function(app){
 
 	// 7. 비밀번호 찾기(변경) API
 	app.patch('/app/users/password', user.changePassword)
+
+	// 8. 사용자 정보 수정 API
+	app.patch('/app/users/edit', jwtMiddleware, user.changeUserInfo)
 };
 
 

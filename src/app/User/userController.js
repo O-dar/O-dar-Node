@@ -327,6 +327,11 @@ export const changePassword = async (req, res) => {
 		if(!email) {
 			return res.send(errResponse(baseResponse.SIGNUP_EMAIL_EMPTY));
 		}
+		const user = await userProvider.getUserByEmail(email);
+		//console.log(user);
+    if (!user) {
+      return res.send(errResponse(baseResponse.USER_USEREMAIL_NOT_EXIST));
+    }
 
 		// 2) 비밀번호: NOT null, 정규식(특수문자(!, @, #, $, % , &, *), 대소문자, 숫자), 길이(8 ~ 15자)
 		// 비밀번호 null
@@ -341,6 +346,44 @@ export const changePassword = async (req, res) => {
 		const changeEmail = await userService.changePassword(email, password);
 
 		return res.send(response(baseResponse.SUCCESS, changeEmail ));
+	} catch (err) {
+    console.error(err);
+    return res.send(errResponse(baseResponse.SERVER_ERROR));
+  }
+}
+
+/*
+	8. 사용자 정보 수정 API
+	[PATCH] /app/users/edit
+*/
+export const changeUserInfo = async (req, res) => {
+	try {
+		const id = res.locals.user.id;
+    let userInfoById = await userProvider.getUserById(id);
+
+		const profile_img = req.body.profile_img;
+		const want_days = req.body.want_days;
+		const desire_start_time = req.body.desire_start_time;
+		const desire_end_time = req.body.desire_end_time;
+		const job_notice = req.body.job_notice;
+		const place_notice = req.body.place_notice;
+		const place_provide = req.body.place_provide;
+
+		/**
+		 profile_img: userInfoById.profile_img,
+			want_days: userInfoById.want_days,
+			desire_start_time: userInfoById.desire_start_time,
+			desire_end_time: userInfoById.desire_end_time,
+			job_notice: userInfoById.job_notice,
+			place_notice: userInfoById.place_notice,
+			place_provide: userInfoById.place_provide
+    };
+		let region_id = userInfoById.region_id
+		let job_id = userInfoById.job_id
+		*/
+
+
+		return res.send(response(baseResponse.SUCCESS, "test" ));
 	} catch (err) {
     console.error(err);
     return res.send(errResponse(baseResponse.SERVER_ERROR));
