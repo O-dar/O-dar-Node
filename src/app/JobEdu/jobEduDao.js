@@ -1,7 +1,11 @@
 const { logger } = require("../../../config/winston");
 import pool from "../../../config/database";
 
-export const selectJobEduList = async function (pageSize, offset, active_status) {
+export const selectJobEduList = async function (
+  pageSize,
+  offset,
+  active_status
+) {
   const query = active_status
     ? `SELECT * FROM job_educations WHERE active_status = ${active_status} ORDER BY posted_at DESC LIMIT ${pageSize} OFFSET ${offset}`
     : `SELECT * FROM job_educations ORDER BY posted_at DESC LIMIT ${pageSize} OFFSET ${offset}`;
