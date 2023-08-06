@@ -17,6 +17,14 @@ module.exports = function(app){
 	// 4. 사용자 정보 조회 API
 	app.get('/app/users/info', jwtMiddleware, user.getUserInfo);
 
+	// 5. 아이디 찾기 API
+	app.get('/app/users/email', user.getUserEmail)
+
+	// 6. 아이디(이메일) 인증(가입된 아이디인지 확인) API
+	app.get('/app/users/check-email', user.checkSignEmail)
+
+	// 7. 비밀번호 찾기(변경) API
+	app.patch('/app/users/password', user.changePassword)
 };
 
 

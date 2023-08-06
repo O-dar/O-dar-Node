@@ -43,3 +43,16 @@ export const deleteUserService = async function (id) {
     return errResponse(baseResponse.DB_ERROR);
   }
 }
+
+
+// 비밀번호 변경
+export const changePassword = async function (email, password) {
+  try {
+    const patchPasswordResult = await userDao.patchPasswordByEmail(email, await hashPassword(password));
+
+    return patchPasswordResult;
+  } catch (err) {
+    logger.error(`App - createUser Service error\n: ${err.code}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+}
