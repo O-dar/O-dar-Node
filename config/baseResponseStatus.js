@@ -32,6 +32,8 @@ module.exports = {
 
     USER_USEREMAIL_EMPTY : { "isSuccess": false, "code": 400, "message": "이메일을 입력해주세요." },
     USER_USEREMAIL_NOT_EXIST : { "isSuccess": false, "code": 404, "message": "해당 이메일을 가진 회원이 존재하지 않습니다." },
+    USER_USERPHONE_NOT_EXIST : { "isSuccess": false, "code": 404, "message": "해당 전화번호로 가입된 회원이 존재하지 않습니다." },
+    USER_USEREMAIL_NOT_EQEAL : { "isSuccess": false, "code": 404, "message": "이메일이 일치하지 않습니다." },
     USER_ID_NOT_MATCH : { "isSuccess": false, "code": 401, "message": "유저 아이디 값을 확인해주세요" },
     USER_NICKNAME_EMPTY : { "isSuccess": false, "code": 400, "message": "변경할 닉네임 값을 입력해주세요" },
 
@@ -41,7 +43,7 @@ module.exports = {
     SIGNUP_REDUNDANT_EMAIL_PHONE : { "isSuccess": false, "code": 400, "message":"이미 해당 이메일 또는 전화번호로 가입된 정보가 있습니다." },
     SIGNUP_REDUNDANT_NICKNAME : { "isSuccess": false, "code": 400, "message":"중복된 닉네임입니다." },
 
-    SIGNIN_EMAIL_WRONG : { "isSuccess": false, "code": 404, "message": "아이디가 잘못 되었습니다." },
+    SIGNIN_EMAIL_WRONG : { "isSuccess": false, "code": 404, "message": "이메일이 잘못 되었습니다." },
     SIGNIN_PASSWORD_WRONG : { "isSuccess": false, "code": 404, "message": "비밀번호가 잘못 되었습니다." },
     SIGNIN_INACTIVE_ACCOUNT : { "isSuccess": false, "code": 400, "message": "비활성화 된 계정입니다. 고객센터에 문의해주세요." },
     SIGNIN_WITHDRAWAL_ACCOUNT : { "isSuccess": false, "code": 400, "message": "탈퇴 된 계정입니다. 고객센터에 문의해주세요." },

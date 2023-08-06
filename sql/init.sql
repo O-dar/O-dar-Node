@@ -18,6 +18,8 @@ CREATE TABLE city (
   FOREIGN KEY (province_id) REFERENCES province(province_id)
 );
 ALTER TABLE city ALTER province_id DROP NOT NULL;
+ALTER TABLE city DROP COLUMN city_name;
+ALTER TABLE city ADD COLUMN city_name VARCHAR(255) NOT NULL;
 
 -- 읍/면/동(지역)
 CREATE TABLE regions (
@@ -28,6 +30,8 @@ CREATE TABLE regions (
   FOREIGN KEY (city_id) REFERENCES city(city_id)
 );
 ALTER TABLE regions ALTER city_id DROP NOT NULL;
+ALTER TABLE regions DROP COLUMN region_name;
+ALTER TABLE regions ADD COLUMN region_name VARCHAR(255) NOT NULL;
 
 -- 직종 목록
 CREATE TABLE job_categories (
@@ -60,3 +64,4 @@ CREATE TABLE users (
 );
 ALTER TABLE users ALTER region_id DROP NOT NULL;
 ALTER TABLE users ALTER job_id DROP NOT NULL;
+ALTER TABLE users ADD COLUMN want_days VARCHAR(50)[];

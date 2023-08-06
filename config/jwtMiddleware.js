@@ -7,11 +7,12 @@ const baseResponse = require("./baseResponseStatus");
 
 const jwtMiddleware = (req, res, next) => {
   // 헤더의 accessToeken을 검증하는 미들웨어
+  //req.clearCookie('accessToken').end();
   let accessToken = req.headers.authorization?.split(" ")[1];
   // 또는 쿠키의 accessToken 파싱
-  if (!accessToken) {
+  /*if (!accessToken) {
     accessToken = req.cookies.accessToken;
-  }
+  }*/
   // 그래도 없으면
   if (!accessToken) {
     console.log(`Access Token이 없습니다.`);
