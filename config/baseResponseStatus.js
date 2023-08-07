@@ -211,6 +211,11 @@ module.exports = {
     code: 404,
     message: "검색 결과가 없습니다.",
   },
+  PAGE_OUT_OF_BOUNDS_ERROR: {
+    isSuccess: false,
+    code: 400,
+    message: "페이지가 범위를 벗어났습니다.",
+  },
 
   // JobApply
   APPLYID_EMPTY: {
@@ -229,5 +234,4 @@ module.exports = {
     isSuccess: false,
     code: 404,
     message: "이미 지원한 구직공고입니다.",
-  },
 };
