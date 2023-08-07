@@ -234,4 +234,5 @@ module.exports = {
     isSuccess: false,
     code: 404,
     message: "이미 지원한 구직공고입니다.",
+  },
 };
