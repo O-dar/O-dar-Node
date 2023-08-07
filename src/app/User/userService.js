@@ -56,3 +56,27 @@ export const changePassword = async function (email, password) {
     return errResponse(baseResponse.DB_ERROR);
   }
 }
+
+// 지역 정보 추가 또는 조회
+export const getOrAddRegion = async function (province , city, region) {
+  try {
+    const getOrAddRegionResult = await userDao.getOrAddRegionId(province , city, region);
+
+    return getOrAddRegionResult;
+  } catch (err) {
+    logger.error(`App - createUser Service error\n: ${err.code}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+}
+
+// 사용자 정보 수정
+export const changeUserInfo = async function (userInfo) {
+  try {
+    const patchUserInfoResult = await userDao.patchUserInfo(userInfo);
+
+    return patchUserInfoResult;
+  } catch (err) {
+    logger.error(`App - createUser Service error\n: ${err.code}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+}
