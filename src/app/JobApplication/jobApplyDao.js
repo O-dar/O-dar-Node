@@ -2,8 +2,9 @@ const { logger } = require("../../../config/winston");
 import pool from "../../../config/database";
 
 export const selectJobApplyList = async function (user_id) {
+  // 최근 10개 지원내역 조회
   const query = `
-    SELECT * FROM user_job_applications WHERE user_id = ${user_id};`;
+    SELECT * FROM user_job_applications WHERE user_id = ${user_id} ORDER BY CREATED_AT DESC LIMIT 10;`;
 
   try {
     const result = await pool.query(query);
