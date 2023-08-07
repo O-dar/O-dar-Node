@@ -144,7 +144,6 @@ const patchPasswordByEmail = async (email, password) => {
   try {
     let timestamp = await pool.query(timeQuery);
     const emailInfo = await pool.query(patchPasswordByEmailQuery, [password, email, timestamp.rows[0].now]);
-    //console.log(emailInfo);
 
     return "비밀번호가 변경 되었습니다.";
   } catch (err) {
