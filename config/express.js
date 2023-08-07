@@ -24,7 +24,7 @@ module.exports = function () {
     require('../src/app/Auth/authRoute')(app);
     require('../src/app/Image/imageRoute')(app);
     require('../src/app/JobCategory/jobCategoryRoute')(app);
-    
+    require('../src/app/Question/questionRoute')(app);
 
     return app;
 };
