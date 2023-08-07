@@ -18,6 +18,10 @@ export const sendQuestionEmail = async function (req, res) {
 
   try {
     const questionText = req.body.question;
+
+    if(!questionText) {
+      return res.send(errResponse(baseResponse.QUESTION_EMPTY));
+    }
     
     const questionEmail = await transporter.sendMail({
       from: `오다르`,
