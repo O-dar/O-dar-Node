@@ -63,15 +63,9 @@ const findUserByEmail = async (client, email) => {
 
 // region_id로 지역 정보 가져오기
 const findRegionById = async (region_id) => {
-  const findRegionByIdQuery = `SELECT region_name, city_id
-                              FROM regions
-                              WHERE region_id = $1`;
-  const findCityByIdQuery = `SELECT city_name, province_id
-                              FROM city
-                              WHERE city_id = $1`;
-  const findProvinceByIdQuery = `SELECT province_name
-                              FROM province
-                              WHERE province_id = $1`;
+  const findRegionByIdQuery = `SELECT region_name, city_id FROM regions WHERE region_id = $1`;
+  const findCityByIdQuery = `SELECT city_name, province_id FROM city WHERE city_id = $1`;
+  const findProvinceByIdQuery = `SELECT province_name FROM province WHERE province_id = $1`;
   try {
     let region = null;
     let city = null;
@@ -143,13 +137,93 @@ const findEmailByPhone = async (phone) => {
   }
 }
 
-const patchPasswordByEmail= async (email, password) => {
-  const patchPasswordByEmailQuery = `UPDATE users SET password = $1 WHERE email = $2;`;
+// 비밀번호 변경
+const patchPasswordByEmail = async (email, password) => {
+  const patchPasswordByEmailQuery = `UPDATE users SET password = $1, updated_at = $3 WHERE email = $2;`;
+  const timeQuery = `SELECT NOW()`;
   try {
-    const emailInfo = await pool.query(patchPasswordByEmailQuery, [password, email]);
-    console.log(emailInfo);
+    let timestamp = await pool.query(timeQuery);
+    const emailInfo = await pool.query(patchPasswordByEmailQuery, [password, email, timestamp.rows[0].now]);
 
     return "비밀번호가 변경 되었습니다.";
+  } catch (err) {
+    return errResponse(baseResponse.SERVER_ERROR);
+  }
+}
+
+// 지역 정보 추가 또는 조회
+const getOrAddRegionId = async (province, city, region) => {
+  // 조회
+  const findProvinceByNameQuery = `SELECT province_id FROM province WHERE province_name = $1`;
+  const findCityByNameQuery = `SELECT city_id FROM city WHERE province_id = $1 AND city_name = $2`;
+  const findRegionByNameQuery = `SELECT region_id FROM regions WHERE city_id = $1 AND region_name = $2`;
+  
+  // 추가
+  const insertProvinceQuery = `INSERT INTO province (province_name) VALUES ($1)`;
+  const insertCityQuery = `INSERT INTO city (province_id, city_name) VALUES ($1, $2)`;
+  const insertRegionQuery = `INSERT INTO regions (city_id, region_name) VALUES ($1, $2)`;
+
+  try {
+    let province_id = await pool.query(findProvinceByNameQuery, [province]);
+    
+    if(province_id.rows[0] == null) {
+      await pool.query(insertProvinceQuery, [province]);
+      province_id = await pool.query(findProvinceByNameQuery, [province]);
+      province_id = province_id.rows[0].province_id;
+    }
+    else {
+      province_id = province_id.rows[0].province_id;
+    }
+
+    let city_id = await pool.query(findCityByNameQuery, [province_id, city]);
+    if(city_id.rows[0] == null) {
+      await pool.query(insertCityQuery, [province_id, city]);
+      city_id = await pool.query(findCityByNameQuery, [province_id, city]);
+      city_id = city_id.rows[0].city_id;
+    }
+    else {
+      city_id = city_id.rows[0].city_id;
+    }
+
+    let region_id = await pool.query(findRegionByNameQuery, [city_id, region]);
+    if(region_id.rows[0] == null) {
+      await pool.query(insertRegionQuery, [city_id, region]);
+      region_id = await pool.query(findRegionByNameQuery, [city_id, region]);
+      region_id = region_id.rows[0].region_id;
+    }
+    else {
+      region_id = region_id.rows[0].region_id;
+    }
+
+    return { province_id, city_id, region_id };
+  } catch (err) {
+    return errResponse(baseResponse.SERVER_ERROR);
+  }
+}
+
+// 사용자 정보 수정
+const patchUserInfo = async (userInfo) => {
+  const patchhUserInfo = `UPDATE users
+  SET profile_img = $1,
+  want_days = $2,
+  desire_start_time = $3,
+  desire_end_time = $4,
+  job_notice = $5,
+  place_notice = $6,
+  place_provide = $7,
+  region_id = $8,
+  job_id = $9,
+  updated_at = $11
+  WHERE user_id = $10;`;
+
+  const timeQuery = `SELECT NOW()`;
+
+  try {
+    let timestamp = await pool.query(timeQuery);
+    userInfo[10] = timestamp.rows[0].now;
+    let patchUserInfoResult = await pool.query(patchhUserInfo, userInfo);
+
+    return "사용자 프로필 정보가 변경되었습니다.";
   } catch (err) {
     return errResponse(baseResponse.SERVER_ERROR);
   }
@@ -164,4 +238,6 @@ module.exports = {
   findJobById,
   findEmailByPhone,
   patchPasswordByEmail,
+  getOrAddRegionId,
+  patchUserInfo
 };

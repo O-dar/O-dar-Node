@@ -358,32 +358,87 @@ export const changePassword = async (req, res) => {
 */
 export const changeUserInfo = async (req, res) => {
 	try {
-		const id = res.locals.user.id;
-    let userInfoById = await userProvider.getUserById(id);
+		const user_id = res.locals.user.id;
+    let userInfoById = await userProvider.getUserById(user_id);
 
-		const profile_img = req.body.profile_img;
-		const want_days = req.body.want_days;
-		const desire_start_time = req.body.desire_start_time;
-		const desire_end_time = req.body.desire_end_time;
-		const job_notice = req.body.job_notice;
-		const place_notice = req.body.place_notice;
-		const place_provide = req.body.place_provide;
+		// 사용자 정보
+		let profile_img = req.body.profile_img;
+		let want_days = req.body.want_days;
+		let desire_start_time = req.body.desire_start_time;
+		let desire_end_time = req.body.desire_end_time;
+		let job_notice = req.body.job_notice;
+		let place_notice = req.body.place_notice;
+		let place_provide = req.body.place_provide;
 
-		/**
-		 profile_img: userInfoById.profile_img,
-			want_days: userInfoById.want_days,
-			desire_start_time: userInfoById.desire_start_time,
-			desire_end_time: userInfoById.desire_end_time,
-			job_notice: userInfoById.job_notice,
-			place_notice: userInfoById.place_notice,
-			place_provide: userInfoById.place_provide
-    };
-		let region_id = userInfoById.region_id
-		let job_id = userInfoById.job_id
-		*/
+		// 지역
+		let region_id = null;
+		const province = req.body.region_info.province;
+    const city = req.body.region_info.city;
+    const region = req.body.region_info.region;
 
+		// 희망 직종
+		let job_id = req.body.job_id;
 
-		return res.send(response(baseResponse.SUCCESS, "test" ));
+		// request 값이 없는 것은 이전에 저장된 값으로 유지
+		if(!profile_img) {
+			profile_img = userInfoById.profile_img;
+		}
+		if(!want_days) {
+			want_days = userInfoById.want_days;
+		}
+		if(!desire_end_time) {
+			desire_end_time = userInfoById.desire_end_time;
+		}
+		if(!desire_start_time) {
+			desire_start_time = userInfoById.desire_start_time;
+		}
+		if(!job_notice) {
+			job_notice = userInfoById.job_notice;
+		}
+		if(!place_notice) {
+			place_notice = userInfoById.place_notice;
+		}
+		if(!place_provide) {
+			place_provide = userInfoById.place_provide
+		}
+		if(!job_id) {
+			job_id = userInfoById.job_id;
+		}
+
+		// 지역 정보
+		if(!province || !city || !region) {
+			region_id = userInfoById.region_id;
+		}
+		else {
+			// 지역 정보 입력값이 있고, 제공 동의 되었을 때
+			if(place_provide == 1) {
+				const getRegionByName = await userService.getOrAddRegion(province, city, region);
+				//console.log(getRegionByName);
+				region_id = getRegionByName.region_id;
+			}
+		}
+
+		// 위치 정보 제공 동의 취소 시 지역 정보 삭제
+		if(place_provide == 0) {
+			region_id = null;
+		}
+
+		let userInfo = [
+			profile_img,
+			want_days,
+			desire_start_time,
+			desire_end_time,
+  		job_notice,
+			place_notice,
+			place_provide,
+			region_id,
+			job_id,
+			user_id
+		];
+
+		const changeInfo = await userService.changeUserInfo(userInfo);
+
+		return res.send(response(baseResponse.SUCCESS, changeInfo ));
 	} catch (err) {
     console.error(err);
     return res.send(errResponse(baseResponse.SERVER_ERROR));
