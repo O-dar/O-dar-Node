@@ -14,8 +14,25 @@ export const getJobEduList = async (req, res) => {
       active_status
     );
 
-    return res.send(response(baseResponse.SUCCESS, jobEduListResult));
+    const totalCount = await jobEduProvider.retrieveJobEduListCount();
+    const totalPage = Math.ceil(totalCount / pageSize);
+
+    // 3. 사용자가 요청한 페이지 번호(`page`)가 총 페이지 수보다 큰지 확인한다.
+    if (page > totalPage) {
+      throw new Error("Page out of bounds");
+    }
+
+    const resultData = {
+      totalCount,
+      totalPage,
+      jobEduListResult,
+    };
+
+    return res.send(response(baseResponse.SUCCESS, resultData));
   } catch (error) {
+    if (error.message === "Page out of bounds") {
+      return res.send(errResponse(baseResponse.PAGE_OUT_OF_BOUNDS_ERROR));
+    }
     console.error(error);
     return res.send(errResponse(baseResponse.DB_ERROR));
   }
