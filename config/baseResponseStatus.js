@@ -214,6 +214,11 @@ module.exports = {
     code: 404,
     message: "해당 취업교육이 존재하지 않습니다.",
   },
+  JOBEDU_SEARCH_EMPTY: {
+    isSuccess: false,
+    code: 404,
+    message: "검색 결과가 없습니다.",
+  },
 
   // JobPosting
   JOBPOSTING_ID_EMPTY: {

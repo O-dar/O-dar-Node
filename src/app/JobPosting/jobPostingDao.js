@@ -47,6 +47,7 @@ export const selectJobPostingById = async function (jobPostingId) {
   }
 };
 
+// 채용공고 검색결과 데이터 가져오는 쿼리
 export const selectJobPostingByKeyword = async function (
   keyword,
   offset,
@@ -73,7 +74,6 @@ export const selectJobPostingTotalCountByKeyword = async function (
   keyword,
   active_status
 ) {
-  console.log(active_status);
   const query = active_status
     ? `SELECT count(*) as total_count FROM job_postings WHERE (title LIKE '%${keyword}%' OR content LIKE '%${keyword}%') AND
   active_status = ${active_status};`

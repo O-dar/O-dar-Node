@@ -19,9 +19,10 @@ export const selectJobEduList = async function (
   }
 };
 
-export const selectJobEduListCount = async function () {
-  const query = `
-        select count(*) as total_count from job_educations;
+export const selectJobEduListCount = async function (active_status) {
+  const query = active_status
+    ? `select count(*) as total_count from job_educations WHERE active_status = ${active_status};`
+    : `      select count(*) as total_count from job_educations;
     `;
 
   try {
@@ -46,14 +47,18 @@ export const selectJobEduById = async function (jobEduId) {
   }
 };
 
+// 취업교육 검색결과 데이터 가져오는 쿼리
 export const selectJobEduByKeyword = async function (
   keyword,
   offset,
-  pageSize
+  pageSize,
+  active_status
 ) {
-  const query = `
-  SELECT * FROM job_educations WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%' ORDER BY posted_at DESC LIMIT ${pageSize} OFFSET ${offset};`;
-
+  const query = active_status
+    ? `SELECT * FROM job_educations WHERE (title LIKE '%${keyword}%' OR content LIKE '%${keyword}%') AND
+  active_status = ${active_status} ORDER BY posted_at DESC LIMIT ${pageSize} OFFSET ${offset};`
+    : `SELECT * FROM job_educations WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%' ORDER BY posted_at DESC LIMIT ${pageSize} OFFSET ${offset};`;
+    
   try {
     const result = await pool.query(query);
     return result.rows;
@@ -63,9 +68,16 @@ export const selectJobEduByKeyword = async function (
   }
 };
 
-export const selectJobEduTotalCountByKeyword = async function (keyword) {
-  const query = `
-  SELECT count(*) as total_count FROM job_educations WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%';`;
+// 취업교육 검색결과 데이터 갯수 세는 쿼리
+export const selectJobEduTotalCountByKeyword = async function (
+  keyword,
+  active_status
+) {
+  const query = active_status
+    ? `SELECT count(*) as total_count FROM job_educations WHERE (title LIKE '%${keyword}%' OR content LIKE '%${keyword}%') AND
+  active_status = ${active_status};`
+    : `SELECT count(*) as total_count FROM job_educations WHERE title LIKE '%${keyword}%' OR content LIKE '%${keyword}%';
+  `;
 
   try {
     const result = await pool.query(query);

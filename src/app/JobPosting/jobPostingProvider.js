@@ -68,7 +68,6 @@ export const searchWithPagination = async function (keyword, page, pageSize, act
       keyword,
       active_status
     );
-    console.log(totalCount);
     // 검색결과가 없으면 에러
     if (parseInt(totalCount) === 0) {
       throw new Error("No search results");
