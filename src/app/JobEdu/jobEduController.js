@@ -48,8 +48,11 @@ export const getJobEduById = async (req, res) => {
   const jobEduId = req.params.jobEduId;
 
   if (!jobEduId) return res.send(errResponse(baseResponse.JOBEDU_ID_EMPTY));
-
+  
   const jobEduByIdResult = await jobEduProvider.retrieveJobEduById(jobEduId);
+  // 해당 id 의 구직공고가 존재하지 않으면 에러
+  if (!jobEduByIdResult)
+    return res.send(errResponse(baseResponse.JOBEDU_ID_NOT_EXIST));
 
   return res.send(response(baseResponse.SUCCESS, jobEduByIdResult));
 };
