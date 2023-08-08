@@ -2,7 +2,7 @@ const jobPostingProvider = require("./jobPostingProvider");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
 
-// 구직공고 목록 조회
+// 채용공고 목록 조회
 export const getjobPostingList = async (req, res) => {
   try {
     const page = req.query.page || 1;
@@ -26,6 +26,7 @@ export const getjobPostingList = async (req, res) => {
   }
 };
 
+// 채용공고 목록 개수 조회
 export const getJobPostingListCount = async (req, res) => {
   const jobPostingListCountResult =
     await jobPostingProvider.retrieveJobPostingListCount();
@@ -50,11 +51,14 @@ export const getJobPostingById = async (req, res) => {
   return res.send(response(baseResponse.SUCCESS, jobPostingByIdResult));
 };
 
-// 구직공고 키워드 검색
+// 채용공고 키워드 검색
 export const getJobPostingBySearch = async (req, res) => {
   const keyword = req.query.keyword;
   const page = req.query.page || 1; // 페이지 번호가 주어지지 않은 경우 기본값은 1
-  const pageSize = req.query.pageSize || 10; // 페이지 크기가 주어지지 않은 경우 기본값은 10
+  const pageSize = req.query.pageSize || 11; // 페이지 크기가 주어지지 않은 경우 기본값은 11
+  const active_status = req.query.active_status;
+
+  // 키워드가 없으면 에러
   if (!keyword) {
     return res.status(400).json({ error: "keyword is required" });
   }
@@ -63,15 +67,17 @@ export const getJobPostingBySearch = async (req, res) => {
     const data = await jobPostingProvider.searchWithPagination(
       keyword,
       page,
-      pageSize
+      pageSize,
+      active_status
     );
-    // data.totalCount int 로 바꾸기
-    if (parseInt(data.totalCount) === 0) {
-      return res.send(errResponse(baseResponse.JOBPOSTING_SEARCH_EMPTY));
-    }
     return res.send(response(baseResponse.SUCCESS, data));
   } catch (err) {
-    console.log(err.stack);
+    if(err.message === "No search results") {
+      return res.send(errResponse(baseResponse.JOBPOSTING_SEARCH_EMPTY));
+    }
+    if(err.message === "Page out of bounds") {
+      return res.send(errResponse(baseResponse.PAGE_OUT_OF_BOUNDS_ERROR));
+    }
     res.status(500).json({ error: "Something went wrong" });
   }
 };
