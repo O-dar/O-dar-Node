@@ -60,7 +60,7 @@ export const getJobEduById = async (req, res) => {
 export const getJobEduBySearch = async (req, res) => {
   const keyword = req.query.keyword;
   const page = req.query.page || 1; // 페이지 번호가 주어지지 않은 경우 기본값은 1
-  const pageSize = req.query.pageSize || 10; // 페이지 크기가 주어지지 않은 경우 기본값은 10
+  const pageSize = req.query.pageSize || 11; // 페이지 크기가 주어지지 않은 경우 기본값은 1
   if (!keyword) {
     return res.status(400).json({ error: "keyword is required" });
   }
