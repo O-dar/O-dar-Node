@@ -10,7 +10,7 @@ export const retrieveJobPostingList = async function (
 ) {
   try {
     // 1. 총 데이터의 개수를 알아낸다.
-    const totalCountResult = await jobPostingDao.selectJobPostingListCount();
+    const totalCountResult = await jobPostingDao.selectJobPostingListCount(active_status);
     const totalCount = totalCountResult.rows[0].total_count;
 
     // 2. 주어진 `pageSize`에 따라 총 페이지 수를 계산한다.
