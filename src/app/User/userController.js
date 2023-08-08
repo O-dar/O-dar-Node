@@ -242,10 +242,21 @@ export const getUserInfo = async (req, res) => {
 
 		const id = res.locals.user.id;
     let userInfoById = await userProvider.getUserById(id);
+		let birthdate = new Date(userInfoById.birthdate);
+
+		// 생일로 만나이 계산
+		const today = new Date();
+		let age = today.getFullYear() - birthdate.getFullYear();
+		const m = today.getMonth() - birthdate.getMonth();
+		if (m < 0 || (m === 0 && today.getDate() < birthdate.getDate())) {
+				age--;
+		}
+		//console.log(age);
+
     let userInfo = {
       // 필요한 정보만 추출
       name: userInfoById.name,
-      birthdate: userInfoById.birthdate,
+      age: age,
       profile_img: userInfoById.profile_img,
 			want_days: userInfoById.want_days,
 			desire_start_time: userInfoById.desire_start_time,
@@ -254,6 +265,7 @@ export const getUserInfo = async (req, res) => {
 			place_notice: userInfoById.place_notice,
 			place_provide: userInfoById.place_provide
     };
+
 		let region_id = userInfoById.region_id
 		let job_id = userInfoById.job_id
 
