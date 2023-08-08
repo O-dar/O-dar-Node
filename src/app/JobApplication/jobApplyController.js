@@ -68,3 +68,36 @@ export const deleteJobApply = async (req, res) => {
     return res.send(errResponse(baseResponse.DB_ERROR));
   }
 };
+
+// 채용공고 지원여부 확인
+export const checkPostingApply = async (req, res) => {
+  const user_id = res.locals.user.id;
+  const job_posting_id = req.params.jobPostingId;
+  const job_edu_id = req.params.jobEduId;
+  try {
+    const checkPostingApply = await jobApplyProvider.checkPostingApply(
+      user_id,
+      job_posting_id,
+      job_edu_id
+    );
+    return res.send(response(baseResponse.SUCCESS, checkPostingApply));
+  } catch (error) {
+    return res.send(errResponse(baseResponse.DB_ERROR));
+  }
+};
+
+// 취업교육 지원여부 확인
+export const checkEduApply = async (req, res) => {
+  const user_id = res.locals.user.id;
+  const job_edu_id = req.params.jobEduId;
+  try {
+    const checkEduApply = await jobApplyProvider.checkEduApply(
+      user_id,
+      job_edu_id
+    );
+    return res.send(response(baseResponse.SUCCESS, checkEduApply));
+  } catch (error) {
+    return res.send(errResponse(baseResponse.DB_ERROR));
+  }
+};
+

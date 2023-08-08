@@ -14,4 +14,18 @@ module.exports = function (app) {
     jwtMiddleware,
     jobApply.deleteJobApply
   );
+
+  // 4. 채용공고 지원여부 확인 API
+  app.get(
+    "/app/jobApply/posting/:jobPostingId(\\d+)",
+    jwtMiddleware,
+    jobApply.checkPostingApply
+  );
+
+  // 5. 취업교육 지원여부 확인 API
+  app.get(
+    "/app/jobApply/edu/:jobEduId(\\d+)",
+    jwtMiddleware,
+    jobApply.checkPostingApply
+  );
 };
