@@ -258,6 +258,18 @@ module.exports = {
   APPLY_ALREADY_EXIST: {
     isSuccess: false,
     code: 404,
-    message: "이미 지원한 구직공고입니다.",
+    message: "이미 지원한 채용공고/취업교육 입니다.",
+  },
+
+  JOB_ID_INVALID: {
+    isSuccess: false,
+    code: 404,
+    message: "job_posting_id 또는 job_edu_id를 입력해주세요",
+  },
+  
+  JOB_ID_NOT_EXIST: {
+    isSuccess: false,
+    code: 404,
+    message: "해당 구직공고 또는 취업교육이 존재하지 않습니다.",
   },
 };

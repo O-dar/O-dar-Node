@@ -20,25 +20,33 @@ export const getJobApplyList = async (req, res) => {
 // 지원내역 추가
 export const createJobApply = async (req, res) => {
   try {
-    // jobPostingId 가 없으면
-    if (!req.body.jobPostingId) {
-      return res.send(errResponse(baseResponse.JOBPOSTING_ID_EMPTY));
-    }
     const user_id = res.locals.user.id;
     const job_posting_id = req.body.jobPostingId;
-    const newJobApply = await jobApplyService.createJobApply(
-      user_id,
-      job_posting_id
-    );
+    const job_edu_id = req.body.jobEduId;
+
+    // job_posting_id와 job_edu_id 중 하나만 있어야 함
+    if ((job_posting_id && job_edu_id) || (!job_posting_id && !job_edu_id)) {
+      return res.send(errResponse(baseResponse.JOB_ID_INVALID));
+    }
+
+    let newJobApply;
+    if (job_posting_id) { // 구직공고 지원
+      newJobApply = await jobApplyService.createJobApply(user_id, job_posting_id);
+    } else {  // 취업교육 지원
+      newJobApply = await jobApplyService.createJobEduApply(user_id, job_edu_id);
+    }
+
     return res.send(response(baseResponse.SUCCESS, newJobApply.command));
   } catch (error) {
-    if (error.message === "Invalid job posting id")
-      return res.send(errResponse(baseResponse.JOBPOSTING_ID_NOT_EXIST));
-    else if (error.message === "User already applied for the job posting")
+    if (error.message === "Invalid job posting id" || error.message === "Invalid job education id") { // 존재하지 않는 구직공고/취업교육 id
+      return res.send(errResponse(baseResponse.JOB_ID_NOT_EXIST));
+    } else if (error.message === "User already applied for the job posting" || error.message === "User already applied for the job education") {  // 이미 지원한 구직공고/취업교육
       return res.send(errResponse(baseResponse.APPLY_ALREADY_EXIST));
+    }
     return res.send(errResponse(baseResponse.DB_ERROR));
   }
 };
+
 
 // 지원내역 삭제
 export const deleteJobApply = async (req, res) => {
