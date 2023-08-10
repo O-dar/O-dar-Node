@@ -66,3 +66,21 @@ ALTER TABLE users ALTER region_id DROP NOT NULL;
 ALTER TABLE users ALTER job_id DROP NOT NULL;
 ALTER TABLE users ADD COLUMN want_days VARCHAR(50)[];
 ALTER TABLE users MODIFY updated_at DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+-- 알림
+CREATE TABLE notices (
+  notice_id SERIAL NOT NULL PRIMARY KEY,
+  user_id INT NOT NULL,
+  notice_title VARCHAR(255) UNIQUE NOT NULL,
+  notice_content VARCHAR(255) UNIQUE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  job_posting_id INT NOT NULL,
+
+  FOREIGN KEY (user_id) REFERENCES users(user_id),
+  FOREIGN KEY (job_posting_id) REFERENCES job_postings(job_posting_id)
+);
+CREATE TRIGGER updated_at
+BEFORE UPDATE ON notices
+FOR EACH ROW
+EXECUTE PROCEDURE update_updated_at();

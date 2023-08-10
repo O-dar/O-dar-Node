@@ -1,7 +1,8 @@
 module.exports = function(app){
 	const notice = require('./noticeController');
 	const { jwtMiddleware } = require("../../../config/jwtMiddleware");
+  //const schedule = require('node-schedule');
 
-	// 1. 유저 생성 (회원가입) API
-	//app.post('/app/users', user.postUsers);
+	// 1. 알림 생성
+	app.listen(notice.addNotice);
 }
