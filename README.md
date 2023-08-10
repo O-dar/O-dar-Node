@@ -21,10 +21,10 @@
 
 ## 👴🏻Tech Stack
 **Web Frontend**  
-`React.js`, `JavaScript`  
+`React.js`, `JavaScript`, `Kakao Local API`  
   
 **Server**  
-`Node.js`, `Express`, `JavaScript`, `PostgreSQL`, `DataGrip`, `Kakao Local API`, `Naver Cloud SMS API`  
+`Node.js`, `Express`, `JavaScript`, `PostgreSQL`, `DataGrip`, `Naver Cloud SMS API`  
 
 <br/>
 
