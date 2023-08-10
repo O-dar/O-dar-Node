@@ -24,6 +24,7 @@ module.exports = function () {
   require('../src/app/Image/imageRoute')(app);
   require('../src/app/JobCategory/jobCategoryRoute')(app);
   require('../src/app/Question/questionRoute')(app);
+  require('../src/app/Notice/noticeRoute')(app);
 
   require("../src/app/JobEdu/jobEduRoute")(app);
   require("../src/app/JobPosting/jobPostingRoute")(app);
