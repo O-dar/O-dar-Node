@@ -156,3 +156,84 @@ export const getCenter = async (req, res) => {
   });
   return res.send(response(baseResponse.SUCCESS));
 };
+
+// 거리별 필터 조회
+export const getJobPostingByRegion = async (req, res) => {
+  // 1. 유저의 region_id 를 받아서 위도, 경도를 구한다.
+  const user_id = res.locals.user.id;
+  // json 형태로 반환
+  const region_data = await jobPostingDao.selectRegionByUserId(user_id);
+  if (!region_data || region_data.region_id === null) {
+    return res.send(errResponse(baseResponse.REGION_ID_NOT_EXIST));
+  }
+  const lat = region_data.latitude;
+  const lng = region_data.longitude;
+
+  // 2. Haversine 공식을 이용해 유저의 위치와 각 구직공고의 위치 사이의 거리를 계산
+  function toRadians(degree) {
+    return degree * (Math.PI / 180);
+  }
+
+  function haversineDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371; // 지구의 반지름 (킬로미터 단위)
+
+    const dLat = toRadians(lat2 - lat1);
+    const dLon = toRadians(lon2 - lon1);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRadians(lat1)) *
+        Math.cos(toRadians(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c; // 거리 (킬로미터 단위)
+
+    return distance;
+  }
+
+  // regions 테이블의 지역들의 위도,경도를 가져온다.
+  const regionList = await jobPostingDao.selectAllRegions();
+
+  // 제일 짧은거리 3개를 반환한다.
+  // 거리 계산 및 region 정보 저장을 위한 배열 생성
+  let distances = [];
+
+  for (const region of regionList) {
+    if (!region.latitude || !region.longitude) {
+      continue;
+    }
+    const distance = haversineDistance(
+      lat,
+      lng,
+      region.latitude,
+      region.longitude
+    );
+
+    // 계산한 거리와 해당 region 정보를 함께 저장
+    distances.push({
+      region: region,
+      distance: distance,
+    });
+  }
+
+  // 거리를 기준으로 오름차순 정렬
+  distances.sort((a, b) => a.distance - b.distance);
+
+  // 상위 3개의 region 선택
+  const top3Regions = distances.slice(0, 5);
+  // region_id 만 추출
+  top3Regions.forEach((region) => {
+    region.region_id = region.region.region_id;
+    delete region.region;
+  });
+
+  console.log(top3Regions);
+  // 채용공고에서 top3Regions 에 해당하는 region_id 를 가진 채용공고를 순위 순서대로 반환
+  const jobPostingByRegion = await jobPostingDao.selectJobPostingByRegion(
+    top3Regions
+  );
+  console.log(jobPostingByRegion);
+  res.send(response(baseResponse.SUCCESS, jobPostingByRegion));
+};

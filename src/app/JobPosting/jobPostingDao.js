@@ -154,3 +154,48 @@ export const updateCenter = async function (region_id, lat, lng) {
     throw error;
   }
 };
+
+// user_id로 region_id 가져오기
+export const selectRegionByUserId = async function (user_id) {
+  const query = `SELECT * FROM USERS JOIN REGIONS ON USERS.region_id = REGIONS.region_id WHERE user_id = ${user_id};`;
+
+  try {
+    const result = await pool.query(query);
+    return result.rows[0];
+  } catch (error) {
+    logger.error("selectRegionByUserId 쿼리 실패");
+    throw error;
+  }
+};
+
+export const selectJobPostingByRegion = async function (regions) {
+  try {
+    const query = `
+        SELECT * FROM job_postings
+        WHERE region_id2 IN ($1, $2, $3, $4, $5)
+        ORDER BY 
+          CASE
+            WHEN region_id2 = $1 THEN 1
+            WHEN region_id2 = $2 THEN 2
+            WHEN region_id2 = $3 THEN 3
+            WHEN region_id2 = $4 THEN 4
+            WHEN region_id2 = $5 THEN 5
+          END
+        LIMIT 10;
+      `;
+
+    const params = [
+      regions[0].region_id,
+      regions[1].region_id,
+      regions[2].region_id,
+      regions[3].region_id,
+      regions[4].region_id,
+    ];
+
+    const { rows } = await pool.query(query, params);
+
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+};

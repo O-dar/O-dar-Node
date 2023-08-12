@@ -1,4 +1,5 @@
 module.exports = function (app) {
+  const { jwtMiddleware } = require("../../../config/jwtMiddleware");
   const jobPosting = require("./jobPostingController");
 
   // 1. 구직공고 목록 API
@@ -9,6 +10,13 @@ module.exports = function (app) {
 
   // 2. 구직공고 상세 조회 API
   app.get("/app/jobPosting/:jobPostingId(\\d+)", jobPosting.getJobPostingById);
+
+  // 4. 구직공고 거리별 필터 조회 API
+  app.get(
+    "/app/jobPosting/region",
+    jwtMiddleware,
+    jobPosting.getJobPostingByRegion
+  );
 
   /*
   내부 사용 API
