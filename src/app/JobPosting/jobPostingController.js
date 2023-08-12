@@ -2,6 +2,8 @@ const jobPostingProvider = require("./jobPostingProvider");
 const jobPostingDao = require("./jobPostingDao");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
+import dotenv from "dotenv";
+dotenv.config();
 
 // 채용공고 목록 조회
 export const getjobPostingList = async (req, res) => {
@@ -108,6 +110,49 @@ export const regionToregionId = async (req, res) => {
       region_id2
     );
     console.log(result);
+  });
+  return res.send(response(baseResponse.SUCCESS));
+};
+
+// 읍면동으로 중심 좌표 계산
+export const getCenter = async (req, res) => {
+  // regions 테이블에 있는 모든 데이터를 가져온다.
+  const regionList = await jobPostingDao.selectAllRegions();
+  // 데이터에 위도,경도를 추가한다
+  regionList.forEach(async (row) => {
+    // regionName == "기타" 이면 continue
+    if (row.city_id !== 4) {
+      return;
+    }
+    const regionName = "진주시 " + row.region_name;
+    console.log(regionName);
+
+    // API 호출
+    const axios = require("axios");
+    const url = `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=${regionName}`;
+    const config = {
+      headers: {
+        "X-NCP-APIGW-API-KEY-ID": process.env.NAVER_CLIENT_ID,
+        "X-NCP-APIGW-API-KEY": process.env.NAVER_CLIENT_SECRET,
+      },
+    };
+    try {
+      const response = await axios.get(url, config);
+      const data = response.data;
+      const latitute = data.addresses[0].y;
+      const longitute = data.addresses[0].x;
+
+      // 위도,경도를 regions 테이블에 업데이트 한다.
+      const result = await jobPostingDao.updateCenter(
+        row.region_id,
+        latitute,
+        longitute
+      );
+      console.log(result);
+    } catch (error) {
+      console.log(error);
+      console.log(url);
+    }
   });
   return res.send(response(baseResponse.SUCCESS));
 };

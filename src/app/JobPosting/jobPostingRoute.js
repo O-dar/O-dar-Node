@@ -18,4 +18,6 @@ module.exports = function (app) {
   app.get("/app/jobPosting/count", jobPosting.getJobPostingListCount);
   // 지역명 지역 id로 변환
   app.get("/app/jobPosting/region", jobPosting.regionToregionId);
+  // 읍면동으로 중심 좌표 계산
+  app.get("/app/jobPosting/center", jobPosting.getCenter);
 };

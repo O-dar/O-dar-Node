@@ -128,3 +128,29 @@ export const updateRegionId = async function (jobPostingId, regionId) {
     throw error;
   }
 };
+
+// regions 테이블에 있는 모든 데이터 가져오기
+export const selectAllRegions = async function () {
+  const query = `SELECT * FROM regions;`;
+
+  try {
+    const result = await pool.query(query);
+    return result.rows;
+  } catch (error) {
+    logger.error("selectAllRegions 쿼리 실패");
+    throw error;
+  }
+};
+
+// region에 위도경도 추가하는 쿼리
+export const updateCenter = async function (region_id, lat, lng) {
+  const query = `UPDATE regions SET latitude = ${lat}, longitude = ${lng} WHERE region_id = ${region_id};`;
+
+  try {
+    const result = await pool.query(query);
+    return result;
+  } catch (error) {
+    logger.error("updateCenter 쿼리 실패");
+    throw error;
+  }
+};
