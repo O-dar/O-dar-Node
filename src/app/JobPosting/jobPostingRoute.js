@@ -16,4 +16,6 @@ module.exports = function (app) {
 
   // 구직공고 목록 개수 API
   app.get("/app/jobPosting/count", jobPosting.getJobPostingListCount);
+  // 지역명 지역 id로 변환
+  app.get("/app/jobPosting/region", jobPosting.regionToregionId);
 };

@@ -1,4 +1,5 @@
 const jobPostingProvider = require("./jobPostingProvider");
+const jobPostingDao = require("./jobPostingDao");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
 
@@ -72,12 +73,41 @@ export const getJobPostingBySearch = async (req, res) => {
     );
     return res.send(response(baseResponse.SUCCESS, data));
   } catch (err) {
-    if(err.message === "No search results") {
+    if (err.message === "No search results") {
       return res.send(errResponse(baseResponse.JOBPOSTING_SEARCH_EMPTY));
     }
-    if(err.message === "Page out of bounds") {
+    if (err.message === "Page out of bounds") {
       return res.send(errResponse(baseResponse.PAGE_OUT_OF_BOUNDS_ERROR));
     }
     res.status(500).json({ error: "Something went wrong" });
   }
+};
+
+// 지역이름 id로 바꾸기
+export const regionToregionId = async (req, res) => {
+  // job_postings 테이블에 있는 모든 데이터를 가져온다.
+  const jobPostingList = await jobPostingDao.selectAllJobPosting();
+  jobPostingList.forEach(async (row) => {
+    const region = row.region_id;
+    let region_id2;
+    // region_id 가 4글자 이하이고 읍/면/동 으로 끝나면
+    if (region.length <= 4 && region.endsWith("읍")) {
+      // regions 테이블에서 해당 지역명을 찾아서 region_id2 로 바꾼다.
+      region_id2 = await jobPostingDao.selectRegionIdByRegionName(region);
+    } else if (region.length <= 4 && region.endsWith("면")) {
+      region_id2 = await jobPostingDao.selectRegionIdByRegionName(region);
+    } else if (region.length <= 4 && region.endsWith("동")) {
+      region_id2 = await jobPostingDao.selectRegionIdByRegionName(region);
+    } else {
+      // 그 외에는 8번(기타)으로 바꾼다.
+      region_id2 = 8;
+    }
+    // region_id2 로 바꾼다.
+    const result = await jobPostingDao.updateRegionId(
+      row.job_posting_id,
+      region_id2
+    );
+    console.log(result);
+  });
+  return res.send(response(baseResponse.SUCCESS));
 };

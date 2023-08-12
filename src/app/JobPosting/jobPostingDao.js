@@ -1,6 +1,20 @@
 const { logger } = require("../../../config/winston");
 import pool from "../../../config/database";
 
+// 모든 채용공고 데이터 가져오는 쿼리
+export const selectAllJobPosting = async function () {
+  const query = `SELECT * FROM job_postings;`;
+
+  try {
+    const result = await pool.query(query);
+    return result.rows;
+  } catch (error) {
+    logger.error("selectAllJobPosting 쿼리 실패");
+    throw error;
+  }
+};
+
+// 채용공고 페이지네이션으로 가져오는 쿼리
 export const selectJobPostingList = async function (
   pageSize,
   offset,
@@ -84,6 +98,33 @@ export const selectJobPostingTotalCountByKeyword = async function (
     return result.rows[0]["total_count"];
   } catch (error) {
     logger.error("selectJobPostingTotalCountByKeyword 쿼리 실패");
+    throw error;
+  }
+};
+
+// 지역이름으로 지역id 가져오기
+export const selectRegionIdByRegionName = async function (regionName) {
+  const query = `SELECT region_id FROM regions WHERE region_name = '${regionName}';`;
+
+  try {
+    const result = await pool.query(query);
+    return result.rows[0]["region_id"];
+  } catch (error) {
+    console.log(regionName);
+    logger.error("selectRegionIdByRegionName 쿼리 실패");
+    throw error;
+  }
+};
+
+// 지역이름으로 지역id 분류하기
+export const updateRegionId = async function (jobPostingId, regionId) {
+  const query = `UPDATE job_postings SET region_id2 = ${regionId} WHERE job_posting_id = ${jobPostingId};`;
+
+  try {
+    const result = await pool.query(query);
+    return result;
+  } catch (error) {
+    logger.error("updateRegionId 쿼리 실패");
     throw error;
   }
 };
