@@ -4,6 +4,10 @@ const methodOverride = require("method-override");
 var cors = require("cors");
 module.exports = function () {
   const app = express();
+  //   const options = {
+  //   key: fs.readFileSync('path_to_key.pem'),
+  //   cert: fs.readFileSync('path_to_cert.pem')
+  // };
 
   app.use(compression());
 
@@ -19,12 +23,12 @@ module.exports = function () {
   // app.use(express.static(process.cwd() + '/public'));
 
   // 도메인
-  require('../src/app/User/userRoute')(app);
-  require('../src/app/Auth/authRoute')(app);
-  require('../src/app/Image/imageRoute')(app);
-  require('../src/app/JobCategory/jobCategoryRoute')(app);
-  require('../src/app/Question/questionRoute')(app);
-  require('../src/app/Notice/noticeRoute')(app);
+  require("../src/app/User/userRoute")(app);
+  require("../src/app/Auth/authRoute")(app);
+  require("../src/app/Image/imageRoute")(app);
+  require("../src/app/JobCategory/jobCategoryRoute")(app);
+  require("../src/app/Question/questionRoute")(app);
+  require("../src/app/Notice/noticeRoute")(app);
 
   require("../src/app/JobEdu/jobEduRoute")(app);
   require("../src/app/JobPosting/jobPostingRoute")(app);

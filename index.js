@@ -1,11 +1,24 @@
 // const express = require('./config/express');
-import express from './config/express';
-import pool from './config/database';
-const {logger} = require('./config/winston');
+import express from "./config/express";
+import pool from "./config/database";
+const { logger } = require("./config/winston");
+const https = require("https"); // 추가
+const fs = require("fs"); // 추가
+import dotenv from "dotenv";
+dotenv.config();
 
-const port = 3000;
+const port = process.env.PORT;
 
-express().listen(port);
+const options = {
+  key: fs.readFileSync("key.pem"), // 실제 키 파일 경로로 변경하세요.
+  cert: fs.readFileSync("cert.pem"), // 실제 인증서 파일 경로로 변경하세요.
+  passphrase: process.env.HTTPS_PASSPHRASE,
+};
+
+const app = express();
+https.createServer(options, app).listen(port); // https 쓰려고 변경된 부분
+// express().listen(port);
+
 logger.info(`${process.env.NODE_ENV} - API Server Start At Port ${port}`);
 
 // Database 연결
