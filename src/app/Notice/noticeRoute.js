@@ -4,7 +4,7 @@ module.exports = function(app){
   //const schedule = require('node-schedule');
 
 	// 1. 알림 생성
-	//app.listen(notice.addNotice);
+	app.listen(notice.addNotice);
 
 	// 2. 알림 조회
 	app.get('/app/notice', jwtMiddleware, notice.getNotices);
