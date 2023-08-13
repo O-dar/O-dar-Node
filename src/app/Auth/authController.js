@@ -1,10 +1,10 @@
-const authProvider = require("./authProvider");
-const authService = require("./authService");
 const baseResponse = require("../../../config/baseResponseStatus");
 const {response, errResponse} = require("../../../config/response");
 
 const CryptoJS = require("crypto-js");
 const axios = require("axios");
+
+import { createRandomNumber } from "../../../utils/createCode"; 
 
 export const sendVerificationSMS = async function (req, res) {
   try {
@@ -70,13 +70,4 @@ export const sendVerificationSMS = async function (req, res) {
     console.log(err);
     return res.send(errResponse(baseResponse.SERVER_ERROR));
   }
-}
-
-const createRandomNumber = (count) => {
-  let code = ""
-  for(let i = 0; i < count; i++) {
-    code += Math.floor(Math.random() * 10);
-  }
-
-  return code;
 }
