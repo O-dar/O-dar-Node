@@ -10,8 +10,11 @@ const schedule = require('node-schedule');
 
 // 1. 알림 생성
 export const addNotice = () => {
-  schedule.scheduleJob('0 * * * * *', function(){
-    console.log('The answer to life, the universe, and everything!');
+  // 매일 00시 00분 00초에 새로운 알림 추가
+  schedule.scheduleJob('0 0 0 * * *', async () => {
+    const addNotice = await noticeService.addNewNotice();
+
+    // console.log(addNotice);
   });
 }
 
