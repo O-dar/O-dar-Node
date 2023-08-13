@@ -20,7 +20,7 @@ module.exports = function(app){
 	// 5. 아이디 찾기 API
 	app.post('/app/users/email', user.getUserEmail)
 
-	// 6. 아이디(이메일) 인증(가입된 아이디인지 확인) API
+	// 6. 아이디(이메일) 인증 API
 	app.post('/app/users/check-email', user.checkSignEmail)
 
 	// 7. 비밀번호 찾기(변경) API

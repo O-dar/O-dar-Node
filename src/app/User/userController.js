@@ -7,12 +7,10 @@ import bcrypt from "bcrypt";
 const jwt = require('jsonwebtoken');
 const { jwtMiddleware, generateToken } = require("../../../config/jwtMiddleware");
 import { setCookie, deleteCookie } from "../../../utils/cookie.js";
-//const regexEmail = require("regex-email");
-//const {emit} = require("nodemon");
-
-import pool from "../../../config/database.js";
+import { createRandomNumber } from "../../../utils/createCode"; 
 
 const dayjs = require('dayjs');
+const nodemailer = require('nodemailer');
 
 /*
  01. 회원가입 API
@@ -306,20 +304,54 @@ export const getUserEmail = async (req, res) => {
 }
 
 /*
-	6. 아이디(이메일) 인증(가입된 아이디인지 확인) API
+	6. 아이디(이메일) 인증 API
 	[GET] /app/users/check-email
 */
 export const checkSignEmail = async (req, res) => {
 	try {
 		const email = req.body.email;
+		
+		// 이메일이 입력되지 않은 경우
+		if(!email) {
+			return res.send(errResponse(baseResponse.SIGNUP_EMAIL_EMPTY));
+		}
 
+		// 가입된 이메일이 아닌 경우
 		const user = await userProvider.getUserByEmail(email);
-		//console.log(user);
     if (!user) {
       return res.send(errResponse(baseResponse.USER_USEREMAIL_NOT_EXIST));
     }
 
-		return res.send(response(baseResponse.SUCCESS, "가입된 이메일입니다." ));
+		// 가입된 이메일이라는 것이 확인 됨 ----------------------
+		const transporter = nodemailer.createTransport({
+			// 사용하고자 하는 서비스, gmail계정으로 전송할 예정이기에 'gmail'
+			service: 'gmail',
+			auth: {
+				// Gmail 주소
+				user: process.env.QUESTION_FROM_EMAIL,
+				// Gmail 패스워드
+				pass: process.env.QUESTION_FROM_EMAIL_PASS,
+			},
+		});
+
+		const verificationCode = createRandomNumber(6); // 인증 코드 (6자리 숫자)
+
+		const questionEmail = await transporter.sendMail({
+      from: `오다르(O-dar)`,
+      to: email,
+      subject: '오다르(O-dar) 이메일 인증',
+      html: 
+      `<div>
+        <h3>오다르(O-dar) 이메일 인증 코드입니다.</h3>
+				<p>아래 인증 코드를 O-dar 페이지에 입력하여 인증을 진행해주세요.</p>
+        <br/>
+        <p>[ ${verificationCode} ]</p>
+      </div>`,
+    });
+
+		const result = `{"response": "인증번호가 발송되었습니다.", "code": "${verificationCode}"}`;
+
+		return res.send(response(baseResponse.SUCCESS, JSON.parse(result)));
 	} catch (err) {
     console.error(err);
     return res.send(errResponse(baseResponse.SERVER_ERROR));
@@ -404,16 +436,19 @@ export const changeUserInfo = async (req, res) => {
 		if(!desire_start_time) {
 			desire_start_time = userInfoById.desire_start_time;
 		}
-		if(!job_notice) {
+		if(job_notice == null) {
 			job_notice = userInfoById.job_notice;
 		}
-		if(!place_notice) {
-			place_notice = userInfoById.place_notice;
-		}
-		if(!place_provide) {
+		if(place_provide == null) {
 			place_provide = userInfoById.place_provide
 		}
-		if(!job_id) {
+		if(place_notice == null) {
+			if(job_notice == 1 && place_provide == 1)
+				place_notice = 1;
+			//place_notice = userInfoById.place_notice;
+			else place_notice = 0;
+		}
+		if(job_id == null) {
 			job_id = userInfoById.job_id;
 		}
 

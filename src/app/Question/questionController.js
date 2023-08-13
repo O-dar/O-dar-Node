@@ -24,12 +24,12 @@ export const sendQuestionEmail = async function (req, res) {
     }
     
     const questionEmail = await transporter.sendMail({
-      from: `오다르`,
+      from: `오다르(O-dar)`,
       to: process.env.QUESTION_TO_EMAIL,
-      subject: '오다르 문의사항',
+      subject: '오다르(O-dar) 문의사항',
       html: 
       `<div>
-        <h2>오다르 사용자가 아래 내용을 문의했습니다.</h2>
+        <h2>오다르(O-dar) 사용자가 아래 내용을 문의했습니다.</h2>
         <br/>
         <p>${questionText}</p>
       </div>`,
