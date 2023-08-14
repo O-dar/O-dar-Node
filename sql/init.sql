@@ -77,8 +77,8 @@ CREATE TABLE notices (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   job_posting_id INT NOT NULL,
 
-  FOREIGN KEY (user_id) REFERENCES users(user_id),
-  FOREIGN KEY (job_posting_id) REFERENCES job_postings(job_posting_id)
+  FOREIGN KEY (user_id) REFERENCES users(user_id) on delete cascade,
+  FOREIGN KEY (job_posting_id) REFERENCES job_postings(job_posting_id) on delete cascade
 );
 CREATE TRIGGER updated_at
 BEFORE UPDATE ON notices
