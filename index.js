@@ -10,9 +10,8 @@ dotenv.config();
 const port = process.env.PORT;
 
 const options = {
-  key: fs.readFileSync("key.pem"), // 실제 키 파일 경로로 변경하세요.
-  cert: fs.readFileSync("cert.pem"), // 실제 인증서 파일 경로로 변경하세요.
-  passphrase: process.env.HTTPS_PASSPHRASE,
+  key: fs.readFileSync("privkey.pem"), // 실제 키 파일 경로로 변경하세요.
+  cert: fs.readFileSync("fullchain.pem"), // 실제 인증서 파일 경로로 변경하세요.
 };
 
 const app = express();
