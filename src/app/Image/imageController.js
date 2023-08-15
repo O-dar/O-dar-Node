@@ -8,7 +8,7 @@ export const upload = async (req, res) => {
   if (!req.file) {
     return res.send(errResponse(baseResponse.IMAGE_UPLOAD));
   }
-  let imageURL = "http://arthurcha.shop:3000/" + req.file.destination + req.file.filename;
+  let imageURL = "https://arthurcha.shop/" + req.file.destination + req.file.filename;
 
   return res.send(response(baseResponse.SUCCESS,
     {
