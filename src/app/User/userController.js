@@ -442,15 +442,13 @@ export const changeUserInfo = async (req, res) => {
 		if(place_provide == null) {
 			place_provide = userInfoById.place_provide
 		}
-		if(place_notice == null) {
-			if(job_notice == 1 && place_provide == 1)
-				place_notice = 1;
-			//place_notice = userInfoById.place_notice;
-			else place_notice = 0;
-		}
 		if(job_id == null) {
 			job_id = userInfoById.job_id;
 		}
+
+		if(job_notice == 1 && place_provide == 1) 
+			place_notice = 1;
+		else place_notice = 0;
 
 		// 지역 정보
 		if(!province || !city || !region) {
