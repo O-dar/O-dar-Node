@@ -21,14 +21,24 @@
 
 ## 👴🏻Tech Stack
 **Web Frontend**  
-`React.js`, `JavaScript`, `Kakao Local API`  
-  
+<a href="https://reactjs.org/" target="_blank" rel="noreferrer"> <img src="https://img.shields.io/badge/react-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="react" height="24"/> </a> <!--React -->
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noreferrer"> <img src="http://img.shields.io/badge/-Javascript-f7e018?style=for-the-badge&logo=javascript&logoColor=black" alt="javascript" height="24"/> </a> <!-- JavaScript -->
+<a href="https://developers.kakao.com/docs/latest/ko/local/dev-guide" target="_blank" rel="noreferrer"> <img src="http://img.shields.io/badge/-Kakao_Local_API-FEE500?style=for-the-badge" alt="Kakao Local API" height="24"/> </a><!--Kakao Local API-->  
 **Server**  
-`Node.js`, `Express`, `JavaScript`, `PostgreSQL`, `DataGrip`, `Naver Cloud SMS API`  
+<a href="https://nodejs.org" target="_blank" rel="noreferrer"> <img src="http://img.shields.io/badge/-Node.js-333?style=for-the-badge&logo=Node.js" alt="nodejs" height="24"/> </a> <!-- Node.js -->
+<a href="https://expressjs.com/ko/" target="_blank" rel="noreferrer"> <img src="http://img.shields.io/badge/-Express.js-000000?style=for-the-badge&logo=Express" alt="Expresjs" height="24"/> </a><!--Express-->
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noreferrer"> <img src="http://img.shields.io/badge/-Javascript-f7e018?style=for-the-badge&logo=javascript&logoColor=black" alt="javascript" height="24"/> </a> <!-- JavaScript -->
+<a href="https://www.postgresql.org/" target="_blank" rel="noreferrer"> <img src="http://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="postgresql" height="24"/> </a> <!-- PostgreSQL -->
+<a href="https://www.jetbrains.com/ko-kr/datagrip/" target="_blank" rel="noreferrer"> <img src="http://img.shields.io/badge/DataGripL-000000?style=for-the-badge&logo=DataGrip&logoColor=white" alt="DataGrip" height="24"/> </a> <!--DataGrip-->
+<a href="https://www.ncloud.com/" target="_blank" rel="noreferrer"> <img src="http://img.shields.io/badge/-Naver_Cloud_SMS_API-1EC800?style=for-the-badge" alt="Naver Cloud SMS API" height="24"/> </a><!--Naver Cloud SMS API-->  
 
 <br/>
 
-## 👵🏻Team
+## 👵🏻DB ERD
+![o-dar](https://github.com/O-dar/O-dar-Node/assets/76805879/3095e8a8-78f0-4a13-adff-54c854b99426)
+
+
+## 👴🏻Team
 ###### (이름 가나다순입니다)  
 
 | Role | Name | University | Github ID |
