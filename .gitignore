@@ -6,3 +6,5 @@ log/*
 .DS_Store
 secret.js
 static/
+privkey.pem
+fullchain.pem
