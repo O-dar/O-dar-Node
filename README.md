@@ -1,3 +1,5 @@
+![서비스 소개](https://github.com/O-dar/O-dar-Node/assets/76805879/5d00f10a-e77a-4002-b3db-c93cbafb9954)
+
 ## 오다르 Server
 ```
 🍀 시니어 맞춤 구인구직 웹 서비스
@@ -83,3 +85,18 @@
 <a href="https://www.postgresql.org/" target="_blank" rel="noreferrer"> <img src="http://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="postgresql" height="24"/> </a> <!-- PostgreSQL -->
 <a href="https://www.jetbrains.com/ko-kr/datagrip/" target="_blank" rel="noreferrer"> <img src="http://img.shields.io/badge/DataGripL-000000?style=for-the-badge&logo=DataGrip&logoColor=white" alt="DataGrip" height="24"/> </a> <!--DataGrip-->
 <a href="https://www.ncloud.com/" target="_blank" rel="noreferrer"> <img src="http://img.shields.io/badge/-Naver_Cloud_SMS_API-1EC800?style=for-the-badge" alt="Naver Cloud SMS API" height="24"/> </a><!--Naver Cloud SMS API-->  
+
+---
+### 💻 Server
+##### DB ERD
+![o-dar](https://github.com/O-dar/O-dar-Node/assets/76805879/de2b764e-7116-4581-9462-c962bfbe1a54)
+##### API SHEET
+<img alt="image" src="https://github.com/O-dar/O-dar-Node/assets/76805879/675338a7-6b5c-4c48-908d-5228935529bd">
+<img alt="image" src="https://github.com/O-dar/O-dar-Node/assets/76805879/c95ced18-0dda-4079-a930-87d58cbdb65e">
+
+<!--
+---
+### 👏🏻 시니어의 새 삶을 밝히다
+![서비스 특징](https://github.com/O-dar/O-dar-Node/assets/76805879/a0a8ce66-fbbb-4a1c-9781-1878acceb43a)
+![서비스 특징 (1)](https://github.com/O-dar/O-dar-Node/assets/76805879/ae38b5b6-761f-4d89-ba92-a10a95948f76)
+![서비스 특징 (2)](https://github.com/O-dar/O-dar-Node/assets/76805879/bad01c29-fc3b-4b89-9915-a803a212f8bb) -->
